@@ -65,14 +65,12 @@ export default {
         },
         services: {
             auth: true,
-            firestore: true
+            firestore: {
+                emulatorPort: process.env.NODE_ENV === 'development' ? 8080 : undefined,
+                emulatorHost: 'localhost',
+            },
         },
     },
-
-    firestore: {
-        emulatorPort: 8080,
-        emulatorHost: 'localhost',
-    }
 
     // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
     vuetify: {

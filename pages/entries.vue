@@ -205,6 +205,7 @@ export default {
 
     methods: {
         initialize() {
+            this.$store.dispatch('entries/index');
             this.entries = this.$store.state.entries.entries;
         },
 
@@ -231,7 +232,7 @@ export default {
 
         editItem(item) {
             this.editedIndex = this.entries.indexOf(item)
-            this.editedItem = Object.assign({}, item)
+            this.editedItem = structuredClone(item)
             this.dialog = true
         },
 
@@ -264,10 +265,9 @@ export default {
 
         save() {
             if (this.editedIndex > -1) {
-                this.$store.commit('entries/update', this.editedItem);
-
+                this.$store.dispatch('entries/update', this.editedItem);
             } else {
-                this.$store.commit('entries/add', this.editedItem);
+                this.$store.dispatch('entries/create', this.editedItem);
             }
             this.close()
         },

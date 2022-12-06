@@ -1,81 +1,5 @@
 export const state = () => ({
-    entries: [
-        {
-            _id: '1000',
-            ticker: {
-                code: 'EZTC3',
-                group: 'Stock',
-            },
-            date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-                .toISOString()
-                .substr(0, 10),
-            description: 'Trade',
-            unitPrice: 18.9,
-            quantity: 50,
-            tax: 0,
-            total: 510.0,
-        },
-        {
-            _id: '1001',
-            ticker: {
-                code: 'EZTC3',
-                group: 'Stock',
-            },
-            date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-                .toISOString()
-                .substr(0, 10),
-            description: 'Trade',
-            unitPrice: 18.9,
-            quantity: 40,
-            tax: 0,
-            total: -400,
-        },
-        {
-            _id: '1002',
-            ticker: {
-                code: 'EZTC3',
-                group: 'Stock',
-            },
-            date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-                .toISOString()
-                .substr(0, 10),
-            description: 'Trade',
-            unitPrice: 18.9,
-            quantity: -20,
-            tax: 0,
-            total: 400,
-        },
-        {
-            _id: '1003',
-            ticker: {
-                code: 'KLBN11',
-                group: 'Stock',
-            },
-            date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-                .toISOString()
-                .substr(0, 10),
-            description: 'Trade',
-            unitPrice: 25.58,
-            quantity: 32,
-            tax: 0,
-            total: 818.56,
-        },
-        {
-            _id: '1004',
-            ticker: {
-                code: 'KLBN11',
-                group: 'Stock',
-            },
-            date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-                .toISOString()
-                .substr(0, 10),
-            description: 'Trade',
-            unitPrice: 25.58,
-            quantity: 32,
-            tax: 0,
-            total: 818.56,
-        },
-    ],
+    entries: []
 })
 
 export const getters = {
@@ -85,7 +9,10 @@ export const getters = {
 }
 
 export const mutations = {
-    add(state, entry) {
+    index(state, entries){
+        state.entries = entries
+    },
+    create(state, entry) {
         state.entries.push(entry)
     },
     update(state, entry) {
@@ -99,10 +26,50 @@ export const mutations = {
 }
 
 export const actions = {
-    // async fetchCounter({ state }) {
-    //     // make request
-    //     const res = { data: 10 };
-    //     state.counter = res.data;
-    //     return res.data;
-    // }
+    async index({ commit }) {
+        const ref = this.$fire.firestore.collection('entries');
+        try {
+            const snapshot = await ref.get()
+
+            const entries = []
+
+            snapshot.forEach(doc => entries.push(doc.data()))
+
+            console.log(entries);
+            commit('index', entries);
+        } catch (e) {
+            return Promise.reject(e)
+        }
+    },
+    async create({ commit }, entry) {
+        const ref = this.$fire.firestore.collection('entries').doc();
+        try {
+            entry._id = ref.id;
+            entry._createdAt = this.$fireModule.firestore.FieldValue.serverTimestamp()
+            entry._updatedAt = this.$fireModule.firestore.FieldValue.serverTimestamp()
+            await ref.set(entry)
+            commit('create', entry);
+        } catch (e) {
+            return Promise.reject(e)
+        }
+    },
+    async update({ commit }, entry) {
+        const ref = this.$fire.firestore.collection('entries').doc(entry._id);
+        try {
+            entry._updatedAt = this.$fireModule.firestore.FieldValue.serverTimestamp()
+            await ref.update(entry)
+            commit('update', entry);
+        } catch (e) {
+            return Promise.reject(e)
+        }
+    },
+    async delete({ commit }, entry) {
+        const ref = this.$fire.firestore.collection('entries').doc(entry._id);
+        try {
+            await ref.delete()
+            commit('delete', entry._id);
+        } catch (e) {
+            return Promise.reject(e)
+        }
+    }
 }
