@@ -64,7 +64,9 @@ export const state = () => ({
 })
 
 export const getters = {
-    
+    tickers(state){
+      return state.entries.map(e => e.ticker.code)
+    }
 }
 
 export const mutations = {
