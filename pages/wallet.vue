@@ -1,8 +1,11 @@
 <template>
+
     <v-row justify="center" align="center">
         <v-col cols="12">
-            <v-data-table
-:headers="headers" :items="entries" sort-by="tickerCode" class="elevation-1" dense
+
+            <v-progress-linear v-model="value"></v-progress-linear>
+
+            <v-data-table :headers="headers" :items="entries" sort-by="tickerCode" class="elevation-1" dense
                 group-by="ticker.group">
                 <template #top>
                     <v-toolbar flat>
@@ -16,7 +19,7 @@
                 </template>
                 <template #item.profitPercentage="{ item }">
                     <v-chip :color="$utils.getColor(item.profitPercentage)" dark label small>
-                        {{ `${item.profitPercentage.toFixed(2)}%` }}
+                        {{ item.profitPercentage }}
                     </v-chip>
                 </template>
                 <template #no-data>
@@ -25,6 +28,10 @@
                     </v-btn>
                 </template>
             </v-data-table>
+
+            <span class="d-flex justify-end text--secondary text-caption mt-1">
+                {{ `Last refresh: ${lastRefresh}` }}
+            </span>
         </v-col>
     </v-row>
 </template>
@@ -87,7 +94,10 @@ export default {
                 { text: 'Profit %', value: 'profitPercentage' },
                 { text: 'Dividend', value: 'dividends' },
                 { text: 'Position', value: 'position' }
-            ]
+            ],
+            value: 0,
+            interval: 0,
+            lastRefresh: new Date().toLocaleTimeString()
         }
     },
     computed: {
@@ -111,6 +121,14 @@ export default {
         dialogDelete(val) {
             val || this.closeDelete()
         },
+        value(val) {
+            if (val < 100) return
+
+            this.initialize()
+
+            this.value = 0
+            this.startBuffer()
+        },
     },
 
     created() {
@@ -121,6 +139,12 @@ export default {
                 this.initialize()
             }
         })
+
+        // this.startBuffer()
+    },
+
+    beforeDestroy() {
+        clearInterval(this.interval)
     },
 
     methods: {
@@ -130,11 +154,32 @@ export default {
 
                 if (!this.tickers.length) return;
 
+                this.entries = [];
+
                 const tickers = await this.$axios.$get(`https://brapi.dev/api/quote/${this.stockTickers.join('%2C')}?range=1d&interval=1d&fundamental=true`)
 
                 const entries = this.$store.state.entries.entries || [];
-
+                
                 const summary = [];
+
+                for (const entry of entries) {
+                    let reduced = summary[entry.ticker.code];
+
+                    if (!reduced) {
+                        reduced = {
+                            ...entry,
+                            quantity: 0,
+                            price: 0,
+                            total: 0
+                        };
+                    }
+
+                    reduced.quantity += Number(entry?.quantity || 0);
+                    reduced.total += Number(entry?.total || 0);
+                    reduced.price = Number(reduced.total / reduced.quantity);
+
+                    summary[entry.ticker.code] = reduced;
+                }
 
                 for (const entry of entries) {
                     let reduced = summary[entry.ticker.code];
@@ -166,7 +211,7 @@ export default {
                         entry.todayValue = serverTicker.regularMarketPrice;
                     }
                     else {
-                        entry.todayTotal = 1;
+                        entry.todayTotal = 1 * entry?.quantity;
                         entry.todayValue = 1;
                     }
 
@@ -185,12 +230,14 @@ export default {
                             paidTotal: this.$utils.formatCurrency(entry?.total),
                             todayTotal: this.$utils.formatCurrency(entry?.todayTotal),
                             profit,
-                            profitPercentage: ((profit / (entry?.total || 1)) * 100),
-                            dividends: 0,
+                            profitPercentage: this.$utils.formatPercentage(profit / (entry?.total || 1)),
+                            dividends: this.$store.getters['incomes/getAmountByTicker'](tickerCode),
                             position: 0
                         }
                     )
                 }
+
+                this.lastRefresh = new Date().toLocaleTimeString();
             }
             catch (err) {
                 console.log(err);
@@ -242,6 +289,14 @@ export default {
         updateEntryTotal() {
             this.editedItem.total = this.editedItem.quantity * this.editedItem.unitPrice;
         },
-    },
+
+        startBuffer() {
+            clearInterval(this.interval)
+
+            this.interval = setInterval(() => {
+                this.value += 1
+            }, 1000)
+        }
+    }
 }
 </script>

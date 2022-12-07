@@ -50,14 +50,19 @@ export default {
                     to: '/',
                 },
                 {
+                    icon: 'mdi-wallet',
+                    title: 'Wallet',
+                    to: '/wallet',
+                },
+                {
                     icon: 'mdi-table-large-plus',
                     title: 'Entries',
                     to: '/entries',
                 },
                 {
-                    icon: 'mdi-wallet',
-                    title: 'Wallet',
-                    to: '/wallet',
+                    icon: 'mdi-wallet-plus',
+                    title: 'Incomes',
+                    to: '/incomes',
                 },
             ],
             miniVariant: false,
@@ -72,8 +77,9 @@ export default {
 
     methods: {
         async initialize() {
+            await this.$store.dispatch('incomes/index');
             await this.$store.dispatch('entries/index');
-            this.entries = this.$store.state.entries.entries;
+            // this.entries = this.$store.state.entries.entries;
         },
     }
 }

@@ -2,3 +2,32 @@
 //
 // The variables you want to modify
 // $font-size-root: 20px;
+
+$material-dark-elevation-colors: (
+  (
+    '0': hsl(261, 33%, 15%),
+    '1': hsl(261, 19%, 16%),
+    '2': hsl(261, 19%, 15%),
+    '3': hsl(261, 9%, 25%),
+    '4': hsl(261, 9%, 30%),
+    '6': rgb(99, 93, 111),
+    '8': rgb(124, 116, 139),
+    '12': hsl(261, 9%, 60%),
+    '16': hsl(261, 9%, 80%),
+    '24': hsl(261, 9%, 100%)
+  )
+);
+
+$material-dark: (
+  'background': map-get($material-dark-elevation-colors, '0'),
+  'navigation-drawer': map-get($material-dark-elevation-colors, '2'),
+  'table': (
+    'active': #505050,
+    'hover': map-get($material-dark-elevation-colors, '4'),
+    'group': map-get($material-dark-elevation-colors, '4'),
+  ),
+);
+
+
+
+

@@ -9,7 +9,7 @@
                         <v-spacer></v-spacer>
 
                         <!-- EDIT MODAL -->
-                        <v-dialog v-model="dialog" max-width="500px">
+                        <v-dialog v-model="dialog" max-width="500px" persistent>
                             <template #activator="{ on, attrs }">
                                 <v-btn color="primary" dark class="mb-2" v-bind="attrs" small v-on="on">
                                     New Entry
@@ -151,9 +151,9 @@ export default {
                 },
                 date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
                 description: '',
-                unitPrice: undefined,
-                quantity: undefined,
-                tax: undefined,
+                unitPrice: 0,
+                quantity: 0,
+                tax: 0,
                 total: 0
             },
             defaultItem: {
@@ -165,8 +165,8 @@ export default {
                 },
                 date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
                 description: '',
-                unitPrice: undefined,
-                quantity: undefined,
+                unitPrice: 0,
+                quantity: 0,
                 tax: 0,
                 total: 0
             },
@@ -218,7 +218,7 @@ export default {
 
         async retrieveTickerInfo(value) {
             try {
-                const ticker = await this.$axios.$get(`https://brapi.dev/api/quote/${value}?range=1d&interval=1d&fundamental=true`);
+                const ticker = await this.$brapi.getQuotes(value);
 
                 if (!ticker.results || !ticker.results.length) {
                     this.editedItem.ticker.name = '';
