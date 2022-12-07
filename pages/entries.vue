@@ -63,12 +63,12 @@ v-model="editedItem.description" label="Description"
 
                                                 <!-- UNIT PRICE -->
                                                 <v-text-field
-v-model="editedItem.unitPrice" label="Unit Price" outlined
+v-model="editedItem.unitPrice" label="Unit Price" outlined type="number"
                                                     dense @change="updateEntryTotal"></v-text-field>
 
                                                 <!-- QUANTITY -->
                                                 <v-text-field
-v-model="editedItem.quantity" label="Quantity" outlined
+v-model="editedItem.quantity" label="Quantity" outlined type="number"
                                                     dense @change="updateEntryTotal"></v-text-field>
 
                                                 <!-- TOTAL -->
@@ -107,6 +107,7 @@ v-model="editedItem.total" label="Total" readonly outlined
 
                     </v-toolbar>
                 </template>
+
                 <template #item.actions="{ item }">
                     <v-icon small class="mr-2" @click="editItem(item)">
                         mdi-pencil
@@ -115,10 +116,9 @@ v-model="editedItem.total" label="Total" readonly outlined
                         mdi-delete
                     </v-icon>
                 </template>
+
                 <template #no-data>
-                    <v-btn color="primary" @click="initialize">
-                        Reset
-                    </v-btn>
+                    No data to show.
                 </template>
             </v-data-table>
         </v-col>
@@ -151,9 +151,9 @@ export default {
                 },
                 date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
                 description: '',
-                unitPrice: 0,
-                quantity: 0,
-                tax: 0,
+                unitPrice: undefined,
+                quantity: undefined,
+                tax: undefined,
                 total: 0
             },
             defaultItem: {
@@ -165,8 +165,8 @@ export default {
                 },
                 date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
                 description: '',
-                unitPrice: 0,
-                quantity: 0,
+                unitPrice: undefined,
+                quantity: undefined,
                 tax: 0,
                 total: 0
             },
@@ -186,10 +186,13 @@ export default {
                 { text: 'Actions', value: 'actions' },
 
             ],
-            entries: []
+            // entries: []
         }
     },
     computed: {
+        entries() {
+            return this.$store.state.entries.entries || [];
+        },
         formTitle() {
             return this.editedIndex === -1 ? 'New Entry' : 'Edit Entry'
         },
@@ -204,14 +207,14 @@ export default {
     },
 
     created() {
-        this.initialize()
+        // this.initialize()
     },
 
     methods: {
-        async initialize() {
-            await this.$store.dispatch('entries/index');
-            this.entries = this.$store.state.entries.entries;
-        },
+        // async initialize() {
+        //     await this.$store.dispatch('entries/index');
+        //     this.entries = this.$store.state.entries.entries;
+        // },
 
         async retrieveTickerInfo(value) {
             try {
@@ -268,12 +271,29 @@ export default {
         },
 
         save() {
+            if(!this.validate(this.editedItem)){
+                this.$notifier.showMessage({ content: 'Please fill all required fields!', color: 'error' })
+                return
+            }
+
             if (this.editedIndex > -1) {
                 this.$store.dispatch('entries/update', this.editedItem);
+                this.$notifier.showMessage({ content: 'The record was updated succesfully!', color: 'info' })
             } else {
+                this.$notifier.showMessage({ content: 'New record was saved succesfully!', color: 'info' })
                 this.$store.dispatch('entries/create', this.editedItem);
             }
+
             this.close()
+        },
+
+        validate(entry) {
+            if(entry && entry.ticker){
+                if(entry.date && entry.ticker.code && entry.ticker.group){
+                    return true;
+                }
+            }
+            return false;
         },
 
         updateEntryTotal() {
