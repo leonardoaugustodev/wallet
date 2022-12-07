@@ -55,18 +55,19 @@ export default {
 
     firebase: {
         config: {
-            apiKey: "AIzaSyCprcq0b0tQSM4LExW86Rx35CC3Lu0Sl9g",
-            authDomain: "walleet-a57a8.firebaseapp.com",
-            projectId: "walleet-a57a8",
-            storageBucket: "walleet-a57a8.appspot.com",
-            messagingSenderId: "641828251067",
-            appId: "1:641828251067:web:8c5d42856f92aa3eb7909e",
-            measurementId: "G-D4Q3P38XCK"
+            apiKey: 'AIzaSyCprcq0b0tQSM4LExW86Rx35CC3Lu0Sl9g',
+            authDomain: 'walleet-a57a8.firebaseapp.com',
+            projectId: 'walleet-a57a8',
+            storageBucket: 'walleet-a57a8.appspot.com',
+            messagingSenderId: '641828251067',
+            appId: '1:641828251067:web:8c5d42856f92aa3eb7909e',
+            measurementId: 'G-D4Q3P38XCK',
         },
         services: {
             auth: true,
             firestore: {
-                emulatorPort: process.env.NODE_ENV === 'development' ? 8080 : undefined,
+                emulatorPort:
+                    process.env.NODE_ENV === 'development' ? 8080 : undefined,
                 emulatorHost: 'localhost',
             },
         },

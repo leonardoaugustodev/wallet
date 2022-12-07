@@ -30,12 +30,8 @@ export const actions = {
         const ref = this.$fire.firestore.collection('entries');
         try {
             const snapshot = await ref.get()
-
             const entries = []
-
             snapshot.forEach(doc => entries.push(doc.data()))
-
-            console.log(entries);
             commit('index', entries);
         } catch (e) {
             return Promise.reject(e)
@@ -63,11 +59,11 @@ export const actions = {
             return Promise.reject(e)
         }
     },
-    async delete({ commit }, entry) {
-        const ref = this.$fire.firestore.collection('entries').doc(entry._id);
+    async delete({ commit }, entryId) {
+        const ref = this.$fire.firestore.collection('entries').doc(entryId);
         try {
             await ref.delete()
-            commit('delete', entry._id);
+            commit('delete', entryId);
         } catch (e) {
             return Promise.reject(e)
         }

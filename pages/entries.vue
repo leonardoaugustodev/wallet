@@ -28,7 +28,8 @@
                                                 <!-- TICKER -->
                                                 <v-text-field
 v-model="editedItem.ticker.code" label="Ticker" outlined
-                                                    dense @change="retrieveTickerInfo"></v-text-field>
+                                                    dense :rules="[rules.required]"
+                                                    @change="retrieveTickerInfo"></v-text-field>
 
                                                 <!-- NAME -->
                                                 <v-text-field
@@ -38,12 +39,12 @@ v-model="editedItem.ticker.name" label="Name" outlined
                                                 <!-- GROUP -->
                                                 <v-combobox
 v-model="editedItem.ticker.group" :items="tickerGroups"
-                                                    label="Group" outlined dense></v-combobox>
+                                                    :rules="[rules.required]" label="Group" outlined dense></v-combobox>
 
                                                 <!-- DATE -->
                                                 <v-menu
 v-model="menu2" :close-on-content-click="false"
-                                                    :nudge-right="40" transition="scale-transition" offset-y
+                                                    :nudge-right="40" transition="scale-transition" offset-y :rules="[rules.required]"
                                                     min-width="auto">
                                                     <template #activator="{ on, attrs }">
                                                         <v-text-field
@@ -135,6 +136,9 @@ export default {
             menu: false,
             modal: false,
             menu2: false,
+            rules: {
+                required: value => !!value || 'Required.',
+            },
             tickerGroups: [
                 'Stock', 'FII', 'International', 'Crypto', 'Fixed Income', 'Saving'
             ],
@@ -204,8 +208,8 @@ export default {
     },
 
     methods: {
-        initialize() {
-            this.$store.dispatch('entries/index');
+        async initialize() {
+            await this.$store.dispatch('entries/index');
             this.entries = this.$store.state.entries.entries;
         },
 
@@ -221,7 +225,7 @@ export default {
                 const retrievedTicker = ticker.results[0];
                 this.editedItem.ticker.name = retrievedTicker.longName;
 
-                this.editedItem = Object.assign({}, this.editedItem);
+                this.editedItem = structuredClone(this.editedItem)
 
             }
             catch (err) {
@@ -238,19 +242,19 @@ export default {
 
         deleteItem(item) {
             this.editedIndex = this.entries.indexOf(item)
-            this.editedItem = Object.assign({}, item)
+            this.editedItem = structuredClone(item)
             this.dialogDelete = true
         },
 
         deleteItemConfirm() {
-            this.$store.commit('entries/delete', this.editedItem._id)
+            this.$store.dispatch('entries/delete', this.editedItem._id)
             this.closeDelete()
         },
 
         close() {
             this.dialog = false
             this.$nextTick(() => {
-                this.editedItem = Object.assign({}, this.defaultItem)
+                this.editedItem = structuredClone(this.defaultItem)
                 this.editedIndex = -1
             })
         },
@@ -258,7 +262,7 @@ export default {
         closeDelete() {
             this.dialogDelete = false
             this.$nextTick(() => {
-                this.editedItem = Object.assign({}, this.defaultItem)
+                this.editedItem = structuredClone(this.defaultItem)
                 this.editedIndex = -1
             })
         },

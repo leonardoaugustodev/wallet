@@ -14,6 +14,11 @@
             {{ formatNumber(item.profit) }}
           </v-chip>
         </template>
+        <template #item.profitPercentage="{ item }">
+          <v-chip :color="getColor(item.profitPercentage)" dark label small>
+            {{ `${item.profitPercentage.toFixed(2)}%` }}
+          </v-chip>
+        </template>
         <template #no-data>
           <v-btn color="primary" @click="initialize">
             Reset
@@ -79,6 +84,7 @@ export default {
         { text: 'Total Paid', value: 'paidTotal' },
         { text: 'Today Total', value: 'todayTotal' },
         { text: 'Profit', value: 'profit' },
+        { text: 'Profit %', value: 'profitPercentage' },
         { text: 'Dividend', value: 'dividends' },
         { text: 'Position', value: 'position' }
       ]
@@ -158,6 +164,8 @@ export default {
             entry.todayValue = 1;
           }
 
+          const profit = (entry?.todayTotal || 0) - (entry?.total || 0);
+
           this.entries.push(
             {
               'ticker': {
@@ -170,7 +178,8 @@ export default {
               paidValue: this.formatNumber(entry?.price),
               paidTotal: this.formatNumber(entry?.total),
               todayTotal: this.formatNumber(entry?.todayTotal),
-              profit: (entry?.todayTotal || 0) - (entry?.total || 0),
+              profit,
+              profitPercentage: ((profit / (entry?.total || 1)) * 100),
               dividends: 0,
               position: 0
             }
