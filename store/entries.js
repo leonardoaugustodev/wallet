@@ -6,6 +6,31 @@ export const getters = {
     tickers(state) {
         return state.entries.map((e) => e.ticker.code)
     },
+    getStocksCodeByType: (state) => (type) => {
+        return state.entries.filter(s => s.ticker.group === type).map(e => e.ticker.code);
+    },
+    getTotalsByStock: (state) => {
+        return state.entries.reduce((acc, entry) => {
+            let reduced = acc[entry.ticker.code];
+
+            if (!reduced) {
+                reduced = {
+                    ...entry,
+                    quantity: 0,
+                    price: 0,
+                    total: 0
+                };
+            }
+
+            reduced.quantity += Number(entry?.quantity || 0);
+            reduced.total += Number(entry?.total || 0);
+            reduced.price = Number(reduced.total / reduced.quantity);
+
+            acc[entry.ticker.code] = reduced;
+
+            return acc;
+        }, {});
+    },
 }
 
 export const mutations = {

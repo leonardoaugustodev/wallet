@@ -77,9 +77,15 @@ export default {
 
     methods: {
         async initialize() {
-            await this.$store.dispatch('incomes/index');
+
+            this.$store.subscribe((mutation) => {
+                if (mutation.type === 'entries/index') {
+                    this.$store.dispatch('wallet/index');
+                    this.$store.dispatch('incomes/index');
+                }
+            })
+
             await this.$store.dispatch('entries/index');
-            // this.entries = this.$store.state.entries.entries;
         },
     }
 }

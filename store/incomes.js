@@ -3,14 +3,10 @@ export const state = () => ({
 })
 
 export const getters = {
-    // tickers(state) {
-    //     return state.incomes.map((e) => e.ticker.code)
-    // },
     getAmountByTicker: (state) => (tickerCode) => {
-        state.incomes.reduce((acc, cv) => {
-            console.log(tickerCode, acc, cv.ticker.code, cv);
-            // if(cv.ticker.code !== tickerCode) return acc;
-            return acc + cv.amount;
+        return state.incomes.reduce((acc, cv) => {
+            if(cv.ticker.code !== tickerCode) return acc;
+            return acc + parseFloat(cv.amount);
         }, 0);
     }
 }

@@ -5,12 +5,42 @@
 
             <v-progress-linear v-model="value"></v-progress-linear>
 
-            <v-data-table :headers="headers" :items="entries" sort-by="tickerCode" class="elevation-1" dense
+            <v-data-table
+:headers="headers" :items="entries" sort-by="tickerCode" class="elevation-1" dense
                 group-by="ticker.group">
                 <template #top>
                     <v-toolbar flat>
                         <v-toolbar-title>Wallet</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <div class="ma-2" outlined>
+                            <div class="text-caption">Current: </div>
+                            {{ $utils.formatCurrency(totalToday) }}
+                        </div>
+                        <div class="ma-2" outlined>
+                            <div class="text-caption">Paid: </div>
+                            {{ $utils.formatCurrency(totalPaid) }}
+                        </div>
+                        <div class="ma-2" outlined>
+                            <div class="text-caption">Profit: </div>
+                            {{ $utils.formatCurrency(profit) }}
+                        </div>
+
                     </v-toolbar>
+                </template>
+                <template #item.todayValue="{ item }">
+                    {{ $utils.formatCurrency(item.todayValue) }}
+                </template>
+                <template #item.todayTotal="{ item }">
+                    {{ $utils.formatCurrency(item.todayTotal) }}
+                </template>
+                <template #item.paidValue="{ item }">
+                    {{ $utils.formatCurrency(item.paidValue) }}
+                </template>
+                <template #item.paidTotal="{ item }">
+                    {{ $utils.formatCurrency(item.paidTotal) }}
+                </template>
+                <template #item.incomes="{ item }">
+                    {{ $utils.formatCurrency(item.incomes) }}
                 </template>
                 <template #item.profit="{ item }">
                     <v-chip :color="$utils.getColor(item.profit)" dark label small>
@@ -19,13 +49,24 @@
                 </template>
                 <template #item.profitPercentage="{ item }">
                     <v-chip :color="$utils.getColor(item.profitPercentage)" dark label small>
-                        {{ item.profitPercentage }}
+                        {{ $utils.formatPercentage(item.profitPercentage) }}
                     </v-chip>
                 </template>
+                <template #item.profitPlusIncome="{ item }">
+                    <v-chip :color="$utils.getColor(item.profitPlusIncome)" dark label small>
+                        {{ $utils.formatCurrency(item.profitPlusIncome) }}
+                    </v-chip>
+                </template>
+                <template #item.profitPlusIncomePercentage="{ item }">
+                    <v-chip :color="$utils.getColor(item.profitPlusIncomePercentage)" dark label small>
+                        {{ $utils.formatPercentage(item.profitPlusIncomePercentage) }}
+                    </v-chip>
+                </template>
+                <template #item.position="{ item }">
+                    {{ $utils.formatPercentage(item.position) }}
+                </template>
                 <template #no-data>
-                    <v-btn color="primary" @click="initialize">
-                        Reset
-                    </v-btn>
+                    No data to show!
                 </template>
             </v-data-table>
 
@@ -42,7 +83,6 @@ export default {
 
     data() {
         return {
-            entries: [],
             dialog: false,
             dialogDelete: false,
             editedIndex: -1,
@@ -92,27 +132,34 @@ export default {
                 { text: 'Today Total', value: 'todayTotal' },
                 { text: 'Profit', value: 'profit' },
                 { text: 'Profit %', value: 'profitPercentage' },
-                { text: 'Dividend', value: 'dividends' },
+                { text: 'Incomes', value: 'incomes' },
+                { text: 'Profit + Inc.', value: 'profitPlusIncome' },
+                { text: 'Profit + Inc. %', value: 'profitPlusIncomePercentage' },
                 { text: 'Position', value: 'position' }
             ],
             value: 0,
-            interval: 0,
-            lastRefresh: new Date().toLocaleTimeString()
+            interval: 0
         }
     },
     computed: {
-        tickers() {
-            const tickers = this.$store.state.entries.entries.map(e => e.ticker.code);
-            return tickers.filter((v, i, a) => a.indexOf(v) === i);
+        entries() {
+            return this.$store.state?.wallet?.wallet || [];
         },
-        stockTickers() {
-            const stockTickers = this.$store.state.entries.entries.filter(s => s.ticker.group === 'Stock');
-            const tickers = stockTickers.map(e => e.ticker.code);
-            return tickers.filter((v, i, a) => a.indexOf(v) === i);
+        lastRefresh() {
+            return this.$store.state.wallet.lastRefresh;
         },
         formTitle() {
             return this.editedIndex === -1 ? 'New Entry' : 'Edit Entry'
         },
+        totalPaid () {
+            return this.$store.getters['wallet/getTotalByFieldName']('paidTotal');
+        },
+        totalToday () {
+            return this.$store.getters['wallet/getTotalByFieldName']('todayTotal');
+        },
+        profit () {
+            return this.totalToday - this.totalPaid;
+        }
     },
     watch: {
         dialog(val) {
@@ -124,7 +171,7 @@ export default {
         value(val) {
             if (val < 100) return
 
-            this.initialize()
+            this.$store.dispatch('wallet/index');
 
             this.value = 0
             this.startBuffer()
@@ -132,15 +179,7 @@ export default {
     },
 
     created() {
-        this.initialize()
-
-        this.$store.subscribe((mutation, state) => {
-            if (mutation.type === 'entries/index') {
-                this.initialize()
-            }
-        })
-
-        // this.startBuffer()
+        // this.initialize()
     },
 
     beforeDestroy() {
@@ -148,101 +187,7 @@ export default {
     },
 
     methods: {
-        async initialize() {
 
-            try {
-
-                if (!this.tickers.length) return;
-
-                this.entries = [];
-
-                const tickers = await this.$axios.$get(`https://brapi.dev/api/quote/${this.stockTickers.join('%2C')}?range=1d&interval=1d&fundamental=true`)
-
-                const entries = this.$store.state.entries.entries || [];
-                
-                const summary = [];
-
-                for (const entry of entries) {
-                    let reduced = summary[entry.ticker.code];
-
-                    if (!reduced) {
-                        reduced = {
-                            ...entry,
-                            quantity: 0,
-                            price: 0,
-                            total: 0
-                        };
-                    }
-
-                    reduced.quantity += Number(entry?.quantity || 0);
-                    reduced.total += Number(entry?.total || 0);
-                    reduced.price = Number(reduced.total / reduced.quantity);
-
-                    summary[entry.ticker.code] = reduced;
-                }
-
-                for (const entry of entries) {
-                    let reduced = summary[entry.ticker.code];
-
-                    if (!reduced) {
-                        reduced = {
-                            ...entry,
-                            quantity: 0,
-                            price: 0,
-                            total: 0
-                        };
-                    }
-
-                    reduced.quantity += Number(entry?.quantity || 0);
-                    reduced.total += Number(entry?.total || 0);
-                    reduced.price = Number(reduced.total / reduced.quantity);
-
-                    summary[entry.ticker.code] = reduced;
-                }
-
-                // MERGE WITH SERVER DATA
-                for (const tickerCode in summary) {
-                    const entry = summary[tickerCode];
-
-                    const serverTicker = tickers.results.find(t => t.symbol === tickerCode);
-
-                    if (serverTicker) {
-                        entry.todayTotal = serverTicker.regularMarketPrice * entry?.quantity;
-                        entry.todayValue = serverTicker.regularMarketPrice;
-                    }
-                    else {
-                        entry.todayTotal = 1 * entry?.quantity;
-                        entry.todayValue = 1;
-                    }
-
-                    const profit = (entry?.todayTotal || 0) - (entry?.total || 0);
-
-                    this.entries.push(
-                        {
-                            'ticker': {
-                                code: tickerCode,
-                                name: entry.ticker.name,
-                                group: entry.ticker.group
-                            },
-                            quantity: entry?.quantity || 0,
-                            todayValue: this.$utils.formatCurrency(entry?.todayValue),
-                            paidValue: this.$utils.formatCurrency(entry?.price),
-                            paidTotal: this.$utils.formatCurrency(entry?.total),
-                            todayTotal: this.$utils.formatCurrency(entry?.todayTotal),
-                            profit,
-                            profitPercentage: this.$utils.formatPercentage(profit / (entry?.total || 1)),
-                            dividends: this.$store.getters['incomes/getAmountByTicker'](tickerCode),
-                            position: 0
-                        }
-                    )
-                }
-
-                this.lastRefresh = new Date().toLocaleTimeString();
-            }
-            catch (err) {
-                console.log(err);
-            }
-        },
 
         editItem(item) {
             this.editedIndex = this.entries.indexOf(item)
