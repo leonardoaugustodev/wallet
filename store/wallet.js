@@ -30,13 +30,17 @@ export const actions = {
             if(!entries || !entries.length) return;
 
             const stockTickers = rootGetters['entries/getStocksCodeByType']('Stock');
-            const tickersData = await this.$brapi.getQuotes(stockTickers.join('%2C'))
+            const internationalTickers = rootGetters['entries/getStocksCodeByType']('International');
+            const realStateTickers = rootGetters['entries/getStocksCodeByType']('Real State');
+            const tickersData = await this.$brapi.getQuotes([...stockTickers, ...internationalTickers, ...realStateTickers].join('%2C'))
 
             const summary = rootGetters['entries/getTotalsByStock'];
 
             // MERGE WITH SERVER DATA
             for (const tickerCode in summary) {
                 const entry = summary[tickerCode];
+
+                if(entry?.quantity <= 0) continue;
 
                 const serverTicker = tickersData.results.find(t => t.symbol === tickerCode);
 

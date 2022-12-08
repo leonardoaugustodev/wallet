@@ -68,6 +68,7 @@ export const actions = {
             entry._id = ref.id;
             entry._createdAt = this.$fireModule.firestore.FieldValue.serverTimestamp()
             entry._updatedAt = this.$fireModule.firestore.FieldValue.serverTimestamp()
+            entry.total = entry?.unitPrice * entry?.quantity;
             await ref.set(entry)
             commit('create', entry);
         } catch (e) {

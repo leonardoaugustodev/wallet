@@ -3,10 +3,10 @@
     <v-row justify="center" align="center">
         <v-col cols="12">
 
-            <v-progress-linear v-model="value"></v-progress-linear>
+            <v-progress-linear v-model="value" color="deep-purple"></v-progress-linear>
 
             <v-data-table
-:headers="headers" :items="entries" sort-by="tickerCode" class="elevation-1" dense
+:headers="headers" :items="entries" sort-by="tickerCode" items-per-page="-1" class="elevation-1" dense
                 group-by="ticker.group">
                 <template #top>
                     <v-toolbar flat>
@@ -179,7 +179,7 @@ export default {
     },
 
     created() {
-        // this.initialize()
+        // this.startBuffer()
     },
 
     beforeDestroy() {
