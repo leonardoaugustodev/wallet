@@ -7,10 +7,10 @@
             <v-card-title class="text-h5"> Settings </v-card-title>
             <v-card-text>
                 <v-tabs vertical>
-                    <v-tab>
+                    <!-- <v-tab>
                         <v-icon left> mdi-account </v-icon>
                         Profile
-                    </v-tab>
+                    </v-tab> -->
                     <v-tab>
                         <v-icon left> mdi-tools </v-icon>
                         General
@@ -20,20 +20,60 @@
                         Developer
                     </v-tab>
 
-                    <v-tab-item>
+                    <!-- <v-tab-item>
                         <v-card flat>
                             <v-card-text> Profile </v-card-text>
                         </v-card>
-                    </v-tab-item>
+                    </v-tab-item> -->
                     <v-tab-item>
                         <v-card flat>
-                            <v-card-text> General </v-card-text>
+                            <v-card-text>
+                                <v-card flat>
+                                    <v-card-title>
+                                        Investment Types
+                                    </v-card-title>
+                                    <v-card-text>
+                                        <v-combobox
+                                            v-model="model"
+                                            :items="items"
+                                            :search-input.sync="search"
+                                            @input="handleInvestmentTypeInput"
+                                            hide-selected
+                                            multiple
+                                            persistent-hint
+                                            small-chips
+                                            deletable-chips
+                                        >
+                                            <template v-slot:no-data>
+                                                <v-list-item>
+                                                    <v-list-item-content>
+                                                        <v-list-item-title>
+                                                            No results matching
+                                                            "<strong>{{
+                                                                search
+                                                            }}</strong
+                                                            >". Press
+                                                            <kbd>enter</kbd> to
+                                                            create a new one
+                                                        </v-list-item-title>
+                                                    </v-list-item-content>
+                                                </v-list-item>
+                                            </template>
+                                        </v-combobox>
+                                    </v-card-text>
+                                </v-card>
+                            </v-card-text>
                         </v-card>
                     </v-tab-item>
                     <v-tab-item>
                         <v-card flat>
                             <v-card-text>
-                                <v-btn outlined block color="primary" @click="loadTestData">
+                                <v-btn
+                                    outlined
+                                    block
+                                    color="primary"
+                                    @click="loadTestData"
+                                >
                                     Load Test Data
                                 </v-btn>
                             </v-card-text>
@@ -65,15 +105,29 @@ export default {
     data() {
         return {
             dialog: false,
+            model: [],
+            search: null,
         }
     },
-    computed: {},
-    watch: {},
-    created() {},
+    computed: {
+        items(){
+           return this.$store.getters['getInvestmentTypeNames']; 
+        }
+    },
+    watch: {
+        
+    },
+    created() {
+    },
     methods: {
         loadTestData() {
             data.forEach((d) => this.$store.dispatch('entries/create', d))
         },
+        handleInvestmentTypeInput(typeName){
+            typeName.forEach(name => {
+                this.$store.commit('addInvestmentType', name);
+            })
+        }
     },
 }
 </script>
