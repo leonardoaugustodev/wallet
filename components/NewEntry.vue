@@ -120,6 +120,9 @@
             </v-card-text>
 
             <v-card-actions>
+                <v-btn color="red darken-1" text @click="deleteItem">
+                    Delete
+                </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn color="blue darken-1" text @click="close">
                     Cancel
@@ -221,6 +224,10 @@ export default {
                 this.$store.dispatch('entries/create', this.record)
             }
 
+            this.close()
+        },
+        deleteItem(){
+            this.$store.dispatch('entries/delete', this.editedItem._id)
             this.close()
         },
         updateEntryTotal() {

@@ -96,6 +96,12 @@ export const actions = {
         try {
             await ref.delete()
             commit('delete', entryId);
+
+            this.$notifier.showMessage({
+                content: 'The record was deleted succesfully!',
+                color: 'info',
+            })
+
         } catch (e) {
             return Promise.reject(e)
         }

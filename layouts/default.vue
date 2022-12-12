@@ -79,9 +79,9 @@ export default {
                     this.$store.dispatch('incomes/index')
                 }
 
-                if (mutation.type.includes('create') || mutation.type.includes('update')) {
-                    this.$store.dispatch('wallet/index')
-                }
+                // if (mutation.type.includes('create') || mutation.type.includes('update')) {
+                //     this.$store.dispatch('wallet/index')
+                // }
             })
 
             await this.$store.dispatch('entries/index')
