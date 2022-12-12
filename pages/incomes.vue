@@ -1,13 +1,7 @@
 <template>
     <v-row justify="center" align="center">
         <v-col cols="12">
-            <v-data-table
-                :headers="headers"
-                :items="incomes"
-                sort-by="date"
-                class="elevation-1"
-                dense
-            >
+            <v-data-table :headers="headers" :items="incomes" sort-by="date" class="elevation-1" dense>
                 <template #top>
                     <v-toolbar flat>
                         <v-toolbar-title>Incomes</v-toolbar-title>
@@ -17,14 +11,7 @@
                         <!-- EDIT MODAL -->
                         <v-dialog v-model="dialog" max-width="500px" persistent>
                             <template #activator="{ on, attrs }">
-                                <v-btn
-                                    color="primary"
-                                    dark
-                                    class="mb-2"
-                                    v-bind="attrs"
-                                    small
-                                    v-on="on"
-                                >
+                                <v-btn color="primary" dark class="mb-2" v-bind="attrs" small v-on="on">
                                     New Income
                                 </v-btn>
                             </template>
@@ -39,93 +26,53 @@
                                             <v-col>
                                                 <!-- DATE -->
                                                 <v-menu
-                                                    v-model="menu2"
-                                                    :close-on-content-click="
-                                                        false
-                                                    "
-                                                    :nudge-right="40"
-                                                    transition="scale-transition"
-                                                    offset-y
-                                                    :rules="[rules.required]"
-                                                    min-width="auto"
-                                                >
+v-model="menu2" :close-on-content-click="
+                                                    false
+                                                " :nudge-right="40" transition="scale-transition" offset-y
+                                                    :rules="[rules.required]" min-width="auto">
                                                     <template
-                                                        #activator="{
-                                                            on,
-                                                            attrs,
-                                                        }"
-                                                    >
+#activator="{
+                                                        on,
+                                                        attrs,
+                                                    }">
                                                         <v-text-field
-                                                            v-model="
-                                                                editedItem.date
-                                                            "
-                                                            label="Date"
-                                                            readonly
-                                                            v-bind="attrs"
-                                                            outlined
-                                                            dense
-                                                            v-on="on"
-                                                        ></v-text-field>
+v-model="
+                                                        editedItem.date" type="date" label="Date" readonly
+                                                            v-bind="attrs" outlined dense v-on="on"></v-text-field>
                                                     </template>
                                                     <v-date-picker
-                                                        v-model="
-                                                            editedItem.date
-                                                        "
-                                                        @input="menu2 = false"
-                                                    ></v-date-picker>
+v-model="
+                                                        editedItem.date
+                                                    " @input="menu2 = false"></v-date-picker>
                                                 </v-menu>
 
                                                 <!-- TICKER -->
                                                 <v-combobox
-                                                    v-model="
-                                                        editedItem.ticker
-                                                    "
-                                                    :items="availableTickers"
-                                                    :rules="[rules.required]"
-                                                    item-text="code"
-                                                    label="Ticker"
-                                                    outlined
-                                                    dense
-                                                    @change="getTickerData"
-                                                ></v-combobox>
+v-model="
+                                                    editedItem.ticker
+                                                " :items="availableTickers" :rules="[rules.required]" item-text="code"
+                                                    label="Ticker" outlined dense @change="getTickerData"></v-combobox>
 
                                                 <!-- TYPE -->
                                                 <v-combobox
-                                                    v-model="editedItem.type"
-                                                    :items="incomeTypes"
-                                                    :rules="[rules.required]"
-                                                    label="Type"
-                                                    outlined
-                                                    dense
-                                                ></v-combobox>
+v-model="editedItem.type" :items="incomeTypes"
+                                                    :rules="[rules.required]" label="Type" outlined dense></v-combobox>
 
                                                 <!-- MEMO -->
                                                 <v-text-field
-                                                    v-model="editedItem.memo"
-                                                    label="Memo"
-                                                    outlined
-                                                    dense
-                                                ></v-text-field>
+v-model="editedItem.memo" label="Memo" outlined
+                                                    dense></v-text-field>
 
                                                 <!-- AMOUNT -->
                                                 <v-text-field
-                                                    v-model="editedItem.amount"
-                                                    label="Amount"
-                                                    outlined
-                                                    type="number"
-                                                    dense
-                                                ></v-text-field>
+v-model="editedItem.amount" label="Amount" outlined
+                                                    type="number" dense></v-text-field>
 
                                                 <!-- QUANTITY -->
                                                 <v-text-field
-                                                    v-model="
-                                                        editedItem.quantity
-                                                    "
-                                                    label="Quantity"
-                                                    outlined
-                                                    type="number"
-                                                    dense
-                                                ></v-text-field>
+v-model="
+                                                    editedItem.quantity
+                                                " label="Quantity" outlined type="number" dense></v-text-field>
                                             </v-col>
                                         </v-row>
                                     </v-container>
@@ -133,18 +80,10 @@
 
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
-                                    <v-btn
-                                        color="blue darken-1"
-                                        text
-                                        @click="close"
-                                    >
+                                    <v-btn color="blue darken-1" text @click="close">
                                         Cancel
                                     </v-btn>
-                                    <v-btn
-                                        color="blue darken-1"
-                                        text
-                                        @click="save"
-                                    >
+                                    <v-btn color="blue darken-1" text @click="save">
                                         Save
                                     </v-btn>
                                 </v-card-actions>
@@ -154,29 +93,37 @@
                         <!-- DELETE MODAL -->
                         <v-dialog v-model="dialogDelete" max-width="500px">
                             <v-card>
-                                <v-card-title class="text-h5"
-                                    >Are you sure you want to delete this
-                                    item?</v-card-title
-                                >
+                                <v-card-title class="text-h5">Are you sure you want to delete this
+                                    item?</v-card-title>
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
-                                    <v-btn
-                                        color="blue darken-1"
-                                        text
-                                        @click="closeDelete"
-                                        >Cancel</v-btn
-                                    >
-                                    <v-btn
-                                        color="blue darken-1"
-                                        text
-                                        @click="deleteItemConfirm"
-                                        >OK</v-btn
-                                    >
+                                    <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
+                                    <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
                                     <v-spacer></v-spacer>
                                 </v-card-actions>
                             </v-card>
                         </v-dialog>
                     </v-toolbar>
+                </template>
+
+                <!-- <template #item.date="{ item }">
+                    {{ new Date(item.date.seconds * 1000).toLocaleDateString() }}
+                </template> -->
+
+                <template #item.amount="{ item }">
+                    {{ parseFloat(item.amount)?.toFixed(2) }}
+                </template>
+
+                <template #item.quantity="{ item }">
+                    {{ parseFloat(item.quantity)?.toFixed(2) }}
+                </template>
+
+                <template #item.unitPrice="{ item }">
+                    {{ $utils.formatCurrency(item.unitPrice) }}
+                </template>
+
+                <template #item.yield="{ item }">
+                    {{ $utils.formatPercentage(item.yield) }}
                 </template>
 
                 <template #item.actions="{ item }">
@@ -186,10 +133,6 @@
                     <v-icon small @click="deleteItem(item)">
                         mdi-delete
                     </v-icon>
-                </template>
-
-                <template #item.yield="{ item }">
-                    {{ $utils.formatPercentage(item.yield)}}
                 </template>
 
                 <template #no-data> No data to show. </template>
@@ -225,7 +168,7 @@ export default {
                     Date.now() - new Date().getTimezoneOffset() * 60000
                 )
                     .toISOString()
-                    .substr(0, 10),
+                    .substring(0, 10),
                 type: '',
                 memo: '',
                 amount: 0,
@@ -243,7 +186,7 @@ export default {
                     Date.now() - new Date().getTimezoneOffset() * 60000
                 )
                     .toISOString()
-                    .substr(0, 10),
+                    .substring(0, 10),
                 type: '',
                 memo: '',
                 amount: 0,
@@ -256,7 +199,7 @@ export default {
                 { text: 'Memo', value: 'memo' },
                 { text: 'Amount', value: 'amount' },
                 { text: 'Quantity', value: 'quantity' },
-                { text: 'Dividend/QTY', value: 'unitDividend' },
+                // { text: 'Dividend/QTY', value: 'unitDividend' },
                 { text: 'Unit Price', value: 'unitPrice' },
                 { text: 'Yield', value: 'yield' },
                 { text: 'Actions', value: 'actions' },
@@ -297,26 +240,6 @@ export default {
             this.availableTickers = entries?.map((t) => {
                 return t.ticker
             })
-        },
-
-        async retrieveTickerInfo(value) {
-            try {
-                const ticker = await this.$axios.$get(
-                    `https://brapi.dev/api/quote/${value}?range=1d&interval=1d&fundamental=true`
-                )
-
-                if (!ticker.results || !ticker.results.length) {
-                    this.editedItem.ticker.name = ''
-                    return
-                }
-
-                const retrievedTicker = ticker.results[0]
-                this.editedItem.ticker.name = retrievedTicker.longName
-
-                this.editedItem = structuredClone(this.editedItem)
-            } catch (err) {
-                this.editedItem.ticker.name = ''
-            }
         },
 
         editItem(item) {
@@ -392,20 +315,23 @@ export default {
                 this.editedItem.quantity * this.editedItem.unitPrice
         },
 
-        async getTickerData() {
+        async getTickerData(evt) {
 
-            try{
+            try {
+                const source = this.$store.getters.getInvestmentTypeByName(evt.group)?.priceSource;
+                if(!source || source !== 'bovespa') return;
+
                 const ticker = await this.$brapi.getQuotes(this.editedItem.ticker.code);
-                if (!ticker.results || !ticker.results.length) return;
+                if (!ticker || !ticker.results || !ticker.results.length) return;
 
                 const retrievedTicker = ticker.results[0];
                 this.editedItem.ticker.unitPrice = retrievedTicker.regularMarketPrice;
 
             }
-            catch(err){
-                error(err);
+            catch (err) {
+                console.log(err);
             }
-            
+
         }
     },
 }

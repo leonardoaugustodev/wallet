@@ -74,6 +74,7 @@ export const actions = {
 
             commit('updateWallet', wallet);
             commit('updateLastRefresh');
+            commit('snackbar/showMessage', {content: 'Wallet refresh!', color: 'success'}, {root: true})
             dispatch('calculatePosition');
         }
         catch (err) {

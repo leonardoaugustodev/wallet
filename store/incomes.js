@@ -41,11 +41,12 @@ export const actions = {
         }
     },
     async create({ commit }, income) {
-        const ref = this.$fire.firestore.collection('incomes').doc();
         try {
+            const ref = this.$fire.firestore.collection('incomes').doc();
             income._id = ref.id;
             income._createdAt = this.$fireModule.firestore.FieldValue.serverTimestamp()
             income._updatedAt = this.$fireModule.firestore.FieldValue.serverTimestamp()
+            // income.date = new Date(new Date(income.date).getTime() + (new Date().getTimezoneOffset() * 60000))
 
             income.unitDividend = Number((income?.amount || 0) / (income?.quantity || 1));
             income.unitPrice = Number(income?.ticker.unitPrice || 1);

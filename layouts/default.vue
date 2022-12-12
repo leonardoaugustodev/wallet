@@ -6,19 +6,13 @@
             <!-- <Avatar if:true="$vuetify.breakpoint.smAndDown" /> -->
 
             <v-tabs centered class="ml-n9" color="grey darken-1">
-                <v-tab
-                    v-for="(item, i) in items"
-                    :key="i"
-                    :to="item.to"
-                    router
-                    exact
-                >
+                <v-tab v-for="(item, i) in items" :key="i" :to="item.to" router exact>
                     {{ item.title }}
                 </v-tab>
             </v-tabs>
 
-            <Avatar class="hidden-sm-and-down"/>
-           
+            <Avatar class="hidden-sm-and-down" />
+
         </v-app-bar>
 
         <v-main>
@@ -68,13 +62,13 @@ export default {
             title: 'Wallet',
         }
     },
-    created() {
-        this.initialize()
-    },
     computed: {
         showSettings() {
             return this.$store.state.showSettings;
         }
+    },
+    created() {
+        this.initialize()
     },
 
     methods: {
@@ -83,6 +77,10 @@ export default {
                 if (mutation.type === 'entries/index') {
                     this.$store.dispatch('wallet/index')
                     this.$store.dispatch('incomes/index')
+                }
+
+                if (mutation.type.includes('create') || mutation.type.includes('update')) {
+                    this.$store.dispatch('wallet/index')
                 }
             })
 

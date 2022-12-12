@@ -63,6 +63,7 @@
                                 <template #activator="{ on, attrs }">
                                     <v-text-field
                                         v-model="record.date"
+                                        type="date"
                                         label="Date"
                                         readonly
                                         v-bind="attrs"
@@ -146,7 +147,7 @@ export default {
                     Date.now() - new Date().getTimezoneOffset() * 60000
                 )
                     .toISOString()
-                    .substr(0, 10),
+                    .substring(0, 10),
                 description: '',
                 unitPrice: 0,
                 quantity: 0,
@@ -164,7 +165,7 @@ export default {
                     Date.now() - new Date().getTimezoneOffset() * 60000
                 )
                     .toISOString()
-                    .substr(0, 10),
+                    .substring(0, 10),
                 description: '',
                 unitPrice: 0,
                 quantity: 0,
@@ -180,7 +181,7 @@ export default {
     },
     computed: {
         tickerGroups() {
-            return this.$store.getters['getInvestmentTypeNames']
+            return this.$store.getters.getInvestmentTypeNames
         },
         formTitle() {
             return !this.record._id ? 'New Entry' : 'Edit Entry'

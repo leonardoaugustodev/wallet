@@ -6,6 +6,9 @@ export const getters = {
     tickers(state) {
         return state.entries.map((e) => e.ticker.code)
     },
+    getEntryByTicker: (state) => (tickerCode) => {
+        return state.entries.find(e => e.ticker.code === tickerCode);
+    },
     getStocksCodeByType: (state) => (type) => {
         return state.entries.filter(s => s.ticker.group === type).map(e => e.ticker.code);
     },
@@ -62,15 +65,18 @@ export const actions = {
             return Promise.reject(e)
         }
     },
-    async create({ commit }, entry) {
-        const ref = this.$fire.firestore.collection('entries').doc();
+    async create({ commit, dispatch }, entry) {
         try {
+            const ref = this.$fire.firestore.collection('entries').doc();
+
             entry._id = ref.id;
             entry._createdAt = this.$fireModule.firestore.FieldValue.serverTimestamp()
             entry._updatedAt = this.$fireModule.firestore.FieldValue.serverTimestamp()
             entry.total = entry?.unitPrice * entry?.quantity;
+
             await ref.set(entry)
             commit('create', entry);
+            dispatch('ticker/create', {...entry.ticker}, {root: true})
         } catch (e) {
             return Promise.reject(e)
         }
