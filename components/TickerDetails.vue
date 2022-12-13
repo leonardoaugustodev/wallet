@@ -107,6 +107,7 @@ export default {
                 ...ticker,
                 currentPrice: Number(this.currentPrice),
                 externalSync: this.externalSync,
+                logoUrl: this.logoUrl
             })
             await this.$store.dispatch('wallet/index')
             this.menu = false
