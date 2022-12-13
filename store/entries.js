@@ -65,11 +65,12 @@ export const actions = {
             return Promise.reject(e)
         }
     },
-    async create({ commit, dispatch }, entry) {
+    async create({ commit, dispatch, rootGetters }, entry) {
         try {
             const ref = this.$fire.firestore.collection('entries').doc();
 
             entry._id = ref.id;
+            entry._userUID = rootGetters['users/getUserUID'];
             entry._createdAt = this.$fireModule.firestore.FieldValue.serverTimestamp()
             entry._updatedAt = this.$fireModule.firestore.FieldValue.serverTimestamp()
             entry.total = entry?.unitPrice * entry?.quantity;

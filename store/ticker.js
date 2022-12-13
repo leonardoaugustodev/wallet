@@ -37,7 +37,7 @@ export const actions = {
             return Promise.reject(e)
         }
     },
-    async create({ state, commit }, ticker) {
+    async create({ state, commit, rootGetters }, ticker) {
 
         try {
 
@@ -47,6 +47,7 @@ export const actions = {
 
             const ref = this.$fire.firestore.collection('tickers').doc();
             ticker._id = ref.id;
+            ticker._userUID = rootGetters['users/getUserUID'];
             ticker._createdAt = this.$fireModule.firestore.FieldValue.serverTimestamp()
             ticker._updatedAt = this.$fireModule.firestore.FieldValue.serverTimestamp()
             await ref.set(ticker)

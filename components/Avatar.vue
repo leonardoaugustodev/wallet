@@ -1,6 +1,6 @@
 <template>
     <v-menu bottom min-width="200px" rounded offset-y>
-        <template v-slot:activator="{ on }">
+        <template #activator="{ on }">
             <v-btn icon x-large v-on="on">
                 <v-avatar color="brown" size="32">
                     <span class="white--text text-body-1">{{
@@ -13,7 +13,7 @@
         <v-card>
             <v-list-item-content class="justify-center">
                 <div class="mx-auto text-center">
-                   
+
                     <h3 class="my-2">{{ user.fullName }}</h3>
                     <p class="text-caption mt-1">
                         {{ user.email }}
@@ -53,7 +53,9 @@ export default {
 
     created() {},
     methods: {
-        logout(){},
+        logout(){
+            this.$store.dispatch('users/logout');
+        },
         openSettings(){
             this.$store.commit('toggleOnSettings');
         }

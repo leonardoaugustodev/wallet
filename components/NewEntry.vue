@@ -108,7 +108,7 @@
 
                             <!-- TOTAL -->
                             <v-text-field
-                                v-model="record.total"
+                                v-model="totalPrice"
                                 label="Total"
                                 readonly
                                 outlined
@@ -189,6 +189,9 @@ export default {
         formTitle() {
             return !this.record._id ? 'New Entry' : 'Edit Entry'
         },
+        totalPrice() {
+            return this.record.total?.toFixed(2)
+        }
     },
     watch: {
         dialog(val) {
@@ -227,6 +230,7 @@ export default {
             this.close()
         },
         deleteItem(){
+            if(!this.editedItem._id) return;
             this.$store.dispatch('entries/delete', this.editedItem._id)
             this.close()
         },

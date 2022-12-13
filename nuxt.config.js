@@ -30,7 +30,7 @@ export default {
     plugins: [
         '~/plugins/notifier.js',
         '~/plugins/utils.js',
-        '~/plugins/brapi.js'
+        '~/plugins/brapi.js',
     ],
 
     // Auto import components: https://go.nuxtjs.dev/config-components
@@ -68,12 +68,23 @@ export default {
             measurementId: 'G-D4Q3P38XCK',
         },
         services: {
-            auth: true,
+            auth: {
+                persistence: 'local',
+                initialize: {
+                    onAuthStateChangedMutation: 'users/onAuthStateChanged',
+                    subscribeManually: false,
+                },
+                ssr: false,
+                emulatorPort:
+                    process.env.NODE_ENV === 'development' ? 9099 : undefined,
+                emulatorHost: 'http://localhost',
+            },
             firestore: {
                 emulatorPort:
                     process.env.NODE_ENV === 'development' ? 8080 : undefined,
                 emulatorHost: 'localhost',
             },
+            hosting: true,
         },
     },
 
@@ -91,7 +102,7 @@ export default {
                     info: colors.teal.lighten1,
                     warning: colors.amber.base,
                     error: colors.deepOrange.accent4,
-                    success: colors.green.accent3
+                    success: colors.green.accent3,
                 },
             },
         },

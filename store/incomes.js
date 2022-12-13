@@ -40,10 +40,11 @@ export const actions = {
             return Promise.reject(e)
         }
     },
-    async create({ commit }, income) {
+    async create({ commit, rootGetters }, income) {
         try {
             const ref = this.$fire.firestore.collection('incomes').doc();
             income._id = ref.id;
+            income._userUID = rootGetters['users/getUserUID'];
             income._createdAt = this.$fireModule.firestore.FieldValue.serverTimestamp()
             income._updatedAt = this.$fireModule.firestore.FieldValue.serverTimestamp()
             // income.date = new Date(new Date(income.date).getTime() + (new Date().getTimezoneOffset() * 60000))

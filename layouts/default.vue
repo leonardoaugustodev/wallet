@@ -2,7 +2,7 @@
     <v-app dark>
         <Snackbar></Snackbar>
 
-        <v-app-bar app flat>
+        <v-app-bar v-if="userIsAuthenticated" app flat>
             <!-- <Avatar if:true="$vuetify.breakpoint.smAndDown" /> -->
 
             <v-tabs centered class="ml-n9" color="grey darken-1">
@@ -29,11 +29,10 @@
 <script>
 import Snackbar from '~/components/Snackbar.vue'
 import Avatar from '~/components/Avatar.vue'
-import Settings from '~/components/Settings.vue'
 
 export default {
     name: 'DefaultLayout',
-    components: { Snackbar, Avatar, Settings },
+    components: { Snackbar, Avatar },
     data() {
         return {
             clipped: false,
@@ -65,6 +64,9 @@ export default {
     computed: {
         showSettings() {
             return this.$store.state.showSettings;
+        },
+        userIsAuthenticated(){
+            return this.$store.state.users.user.uid != null;
         }
     },
     created() {
@@ -78,10 +80,6 @@ export default {
                     this.$store.dispatch('wallet/index')
                     this.$store.dispatch('incomes/index')
                 }
-
-                // if (mutation.type.includes('create') || mutation.type.includes('update')) {
-                //     this.$store.dispatch('wallet/index')
-                // }
             })
 
             await this.$store.dispatch('entries/index')
