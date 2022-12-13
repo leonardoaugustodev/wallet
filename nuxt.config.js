@@ -6,8 +6,8 @@ export default {
 
     // Global page headers: https://go.nuxtjs.dev/config-head
     head: {
-        titleTemplate: '%s - wallet',
-        title: 'wallet',
+        titleTemplate: '%s - Wallet',
+        title: 'Wallet',
         htmlAttrs: {
             lang: 'en',
         },
@@ -78,6 +78,7 @@ export default {
                 emulatorPort:
                     process.env.NODE_ENV === 'development' ? 9099 : undefined,
                 emulatorHost: 'http://localhost',
+                disableEmulatorWarnings: true
             },
             firestore: {
                 emulatorPort:

@@ -15,7 +15,7 @@ export default ({ app, store }, inject) => {
             value = parseFloat(value)
             if (value > 0) return 'green'
             else if (value === 0) return 'gray'
-            else return 'red'
+            else return 'deep-orange darken-4'
         },
     })
 }

@@ -29,39 +29,34 @@ export const actions = {
             const entries = rootState.entries.entries || [];
             if(!entries || !entries.length) return;
 
-            const stockTickers = rootGetters['entries/getStocksCodeByType']('Stock');
-            const internationalTickers = rootGetters['entries/getStocksCodeByType']('International');
-            const realStateTickers = rootGetters['entries/getStocksCodeByType']('Real State');
-            const tickersData = await this.$brapi.getQuotes([...stockTickers, ...internationalTickers, ...realStateTickers].join('%2C'))
+            const tickerCodes = rootGetters['entries/getTickerCodes']
+            if(!tickerCodes) return;
+
+            await dispatch('ticker/sync', null, {root: true});
 
             const summary = rootGetters['entries/getTotalsByStock'];
 
             // MERGE WITH SERVER DATA
             for (const tickerCode in summary) {
-                const entry = summary[tickerCode];
+                const entry = summary[tickerCode]
+                if(entry?.quantity <= 0) continue
+                
+                const existingTicker = rootGetters['ticker/getTickerByCode'](tickerCode)
 
-                if(entry?.quantity <= 0) continue;
+                entry.currentTotal = existingTicker.currentPrice * entry?.quantity;
+                entry.currentPrice = existingTicker.currentPrice;
 
-                const serverTicker = tickersData.results.find(t => t.symbol === tickerCode);
-
-                entry.todayTotal = (serverTicker ? serverTicker.regularMarketPrice : 1) * entry?.quantity;
-                entry.todayValue = serverTicker ? serverTicker.regularMarketPrice : 1;
-
-                const profit = (entry?.todayTotal || 0) - (entry?.total || 0);
+                const profit = (entry?.currentTotal || 0) - (entry?.total || 0);
                 const incomes = rootGetters['incomes/getAmountByTicker'](tickerCode);
 
                 wallet.push(
                     {
-                        'ticker': {
-                            code: tickerCode,
-                            name: entry.ticker.name,
-                            group: entry.ticker.group
-                        },
+                        ticker: structuredClone(existingTicker),
                         quantity: entry?.quantity || 0,
-                        todayValue: entry?.todayValue,
+                        currentPrice: entry?.currentPrice,
                         paidValue: entry?.price,
                         paidTotal: entry?.total,
-                        todayTotal: entry?.todayTotal,
+                        currentTotal: entry?.currentTotal,
                         profit,
                         profitPercentage: profit / (entry?.total || 1),
                         incomes,
@@ -81,11 +76,11 @@ export const actions = {
         }
     },
     calculatePosition({state, commit, getters}) {
-        const total = (getters.getTotalByFieldName('todayTotal') || 1);
+        const total = (getters.getTotalByFieldName('currentTotal') || 1);
         const wallet = state.wallet.map(w => {
             return {
                 ...w,
-                position: w?.todayTotal / total
+                position: w?.currentTotal / total
             }
         });
 

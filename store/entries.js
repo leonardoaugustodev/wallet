@@ -1,43 +1,47 @@
 export const state = () => ({
-    entries: []
+    entries: [],
 })
 
 export const getters = {
-    tickers(state) {
-        return state.entries.map((e) => e.ticker.code)
+    getTickerCodes(state) {
+        const tickerCodes = state.entries.map((e) => e.ticker.code)
+        var unique = tickerCodes.filter((v, i, a) => a.indexOf(v) === i);
+        return unique
     },
     getEntryByTicker: (state) => (tickerCode) => {
-        return state.entries.find(e => e.ticker.code === tickerCode);
+        return state.entries.find((e) => e.ticker.code === tickerCode)
     },
     getStocksCodeByType: (state) => (type) => {
-        return state.entries.filter(s => s.ticker.group === type).map(e => e.ticker.code);
+        return state.entries
+            .filter((s) => s.ticker.group === type)
+            .map((e) => e.ticker.code)
     },
     getTotalsByStock: (state) => {
         return state.entries.reduce((acc, entry) => {
-            let reduced = acc[entry.ticker.code];
+            let reduced = acc[entry.ticker.code]
 
             if (!reduced) {
                 reduced = {
                     ...entry,
                     quantity: 0,
                     price: 0,
-                    total: 0
-                };
+                    total: 0,
+                }
             }
 
-            reduced.quantity += Number(entry?.quantity || 0);
-            reduced.total += Number(entry?.total || 0);
-            reduced.price = Number(reduced.total / reduced.quantity);
+            reduced.quantity += Number(entry?.quantity || 0)
+            reduced.total += Number(entry?.total || 0)
+            reduced.price = Number(reduced.total / reduced.quantity)
 
-            acc[entry.ticker.code] = reduced;
+            acc[entry.ticker.code] = reduced
 
-            return acc;
-        }, {});
+            return acc
+        }, {})
     },
 }
 
 export const mutations = {
-    index(state, entries){
+    index(state, entries) {
         state.entries = entries
     },
     create(state, entry) {
@@ -55,56 +59,58 @@ export const mutations = {
 
 export const actions = {
     async index({ commit }) {
-        const ref = this.$fire.firestore.collection('entries');
+        const ref = this.$fire.firestore.collection('entries')
         try {
             const snapshot = await ref.get()
             const entries = []
-            snapshot.forEach(doc => entries.push(doc.data()))
-            commit('index', entries);
+            snapshot.forEach((doc) => entries.push(doc.data()))
+            commit('index', entries)
         } catch (e) {
             return Promise.reject(e)
         }
     },
     async create({ commit, dispatch, rootGetters }, entry) {
         try {
-            const ref = this.$fire.firestore.collection('entries').doc();
+            const ref = this.$fire.firestore.collection('entries').doc()
 
-            entry._id = ref.id;
-            entry._userUID = rootGetters['users/getUserUID'];
-            entry._createdAt = this.$fireModule.firestore.FieldValue.serverTimestamp()
-            entry._updatedAt = this.$fireModule.firestore.FieldValue.serverTimestamp()
-            entry.total = entry?.unitPrice * entry?.quantity;
+            entry._id = ref.id
+            entry._userUID = rootGetters['users/getUserUID']
+            entry._createdAt =
+                this.$fireModule.firestore.FieldValue.serverTimestamp()
+            entry._updatedAt =
+                this.$fireModule.firestore.FieldValue.serverTimestamp()
+            entry.total = entry?.unitPrice * entry?.quantity
 
             await ref.set(entry)
-            commit('create', entry);
-            dispatch('ticker/create', {...entry.ticker}, {root: true})
+            commit('create', entry)
+            dispatch('ticker/create', { ...entry.ticker }, { root: true })
         } catch (e) {
             return Promise.reject(e)
         }
     },
     async update({ commit }, entry) {
-        const ref = this.$fire.firestore.collection('entries').doc(entry._id);
+        const ref = this.$fire.firestore.collection('entries').doc(entry._id)
         try {
-            entry._updatedAt = this.$fireModule.firestore.FieldValue.serverTimestamp()
+            entry._updatedAt =
+                this.$fireModule.firestore.FieldValue.serverTimestamp()
             await ref.update(entry)
-            commit('update', entry);
+            commit('update', entry)
         } catch (e) {
             return Promise.reject(e)
         }
     },
     async delete({ commit }, entryId) {
-        const ref = this.$fire.firestore.collection('entries').doc(entryId);
+        const ref = this.$fire.firestore.collection('entries').doc(entryId)
         try {
             await ref.delete()
-            commit('delete', entryId);
+            commit('delete', entryId)
 
             this.$notifier.showMessage({
                 content: 'The record was deleted succesfully!',
                 color: 'info',
             })
-
         } catch (e) {
             return Promise.reject(e)
         }
-    }
+    },
 }

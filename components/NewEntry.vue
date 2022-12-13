@@ -22,6 +22,16 @@
                 <v-container>
                     <v-row>
                         <v-col>
+                            <!-- GROUP -->
+                            <v-combobox
+                                v-model="record.ticker.group"
+                                :items="tickerGroups"
+                                :rules="[rules.required]"
+                                label="Type"
+                                outlined
+                                dense
+                            ></v-combobox>
+
                             <!-- TICKER -->
                             <v-text-field
                                 v-model="record.ticker.code"
@@ -39,16 +49,6 @@
                                 outlined
                                 dense
                             ></v-text-field>
-
-                            <!-- GROUP -->
-                            <v-combobox
-                                v-model="record.ticker.group"
-                                :items="tickerGroups"
-                                :rules="[rules.required]"
-                                label="Group"
-                                outlined
-                                dense
-                            ></v-combobox>
 
                             <!-- DATE -->
                             <v-menu
@@ -191,16 +191,16 @@ export default {
         },
         totalPrice() {
             return this.record.total?.toFixed(2)
-        }
+        },
     },
     watch: {
         dialog(val) {
             val || this.close()
         },
-        editedItem(val){
-            this.record = structuredClone(val);
-            this.dialog = true;
-        }
+        editedItem(val) {
+            this.record = structuredClone(val)
+            this.dialog = true
+        },
     },
     created() {},
     methods: {
@@ -213,12 +213,13 @@ export default {
                 return
             }
 
-            if (this.editedIndex > -1) {
+            if (this.record._id) {
                 this.$store.dispatch('entries/update', this.record)
                 this.$notifier.showMessage({
                     content: 'The record was updated succesfully!',
                     color: 'info',
                 })
+                this.$store.dispatch('wallet/index')
             } else {
                 this.$notifier.showMessage({
                     content: 'New record was saved succesfully!',
@@ -229,14 +230,13 @@ export default {
 
             this.close()
         },
-        deleteItem(){
-            if(!this.editedItem._id) return;
+        deleteItem() {
+            if (!this.editedItem._id) return
             this.$store.dispatch('entries/delete', this.editedItem._id)
             this.close()
         },
         updateEntryTotal() {
-            this.record.total =
-                this.record.quantity * this.record.unitPrice
+            this.record.total = this.record.quantity * this.record.unitPrice
         },
         validate(entry) {
             if (entry && entry.ticker) {
@@ -246,20 +246,39 @@ export default {
             }
             return false
         },
-        async retrieveTickerInfo(value) {
+        async retrieveTickerInfo(tickerCode) {
             try {
-                const ticker = await this.$brapi.getQuotes(value)
+                const existingTicker =
+                    this.$store.getters['ticker/getTickerByCode'](tickerCode)
 
-                if (!ticker.results || !ticker.results.length) {
-                    this.record.ticker.name = ''
+                if (existingTicker) {
+                    this.record.ticker = structuredClone(existingTicker)
                     return
                 }
 
-                const retrievedTicker = ticker.results[0]
-                this.record.ticker.name = retrievedTicker.longName
+                const grp = this.$store.getters.getInvestmentTypeByName(
+                    this.record.ticker.group
+                )
+
+                if (grp.priceSource === 'bovespa') {
+                    const tickerData = await this.$brapi.getQuotes(tickerCode)
+                    console.log(tickerData)
+                    if (tickerData.results && tickerData.results.length) {
+                        const retrievedTicker = tickerData.results[0]
+
+                        this.record.ticker.currentPrice =
+                            tickerData.results[0].regularMarketPrice
+
+                        this.record.ticker.name = retrievedTicker.longName
+                    } else {
+                        this.record.ticker.name = ''
+                        return
+                    }
+                }
 
                 this.record = structuredClone(this.record)
             } catch (err) {
+                console.log(err)
                 this.record.ticker.name = ''
             }
         },

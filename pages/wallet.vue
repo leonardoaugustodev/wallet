@@ -14,7 +14,7 @@
                         <v-spacer></v-spacer>
                         <div class="ma-2" outlined>
                             <div class="text-caption">Current: </div>
-                            {{ $utils.formatCurrency(totalToday) }}
+                            {{ $utils.formatCurrency(totalCurrent) }}
                         </div>
                         <div class="ma-2" outlined>
                             <div class="text-caption">Paid: </div>
@@ -27,11 +27,18 @@
 
                     </v-toolbar>
                 </template>
-                <template #item.todayValue="{ item }">
-                    {{ $utils.formatCurrency(item.todayValue) }}
+
+                <template #item.ticker.code="{ item }">
+                    <TickerDetails :ticker="item"></TickerDetails>
                 </template>
-                <template #item.todayTotal="{ item }">
-                    {{ $utils.formatCurrency(item.todayTotal) }}
+
+                <template #item.currentPrice="{ item }">
+                    <span class="primary--text">
+                        {{ $utils.formatCurrency(item.currentPrice) }}
+                    </span>
+                </template>
+                <template #item.currentTotal="{ item }">
+                    {{ $utils.formatCurrency(item.currentTotal) }}
                 </template>
                 <template #item.paidValue="{ item }">
                     {{ $utils.formatCurrency(item.paidValue) }}
@@ -78,9 +85,10 @@
 </template>
 
 <script>
+import TickerDetails from '~/components/TickerDetails.vue'
 export default {
     name: 'WalletPage',
-
+    components: {TickerDetails},
     data() {
         return {
             dialog: false,
@@ -126,10 +134,10 @@ export default {
                     value: 'ticker.group',
                 },
                 { text: 'Quantity', value: 'quantity' },
-                { text: 'Today Value', value: 'todayValue' },
                 { text: 'Payed Value', value: 'paidValue' },
-                { text: 'Total Paid', value: 'paidTotal' },
-                { text: 'Today Total', value: 'todayTotal' },
+                { text: 'Payed Total', value: 'paidTotal' },
+                { text: 'Current Price', value: 'currentPrice' },
+                { text: 'Current Total', value: 'currentTotal' },
                 { text: 'Profit', value: 'profit' },
                 { text: 'Profit %', value: 'profitPercentage' },
                 { text: 'Incomes', value: 'incomes' },
@@ -138,7 +146,8 @@ export default {
                 { text: 'Position', value: 'position' }
             ],
             value: 0,
-            interval: 0
+            interval: 0,
+            showTickerDetailsModal: false
         }
     },
     computed: {
@@ -154,11 +163,11 @@ export default {
         totalPaid () {
             return this.$store.getters['wallet/getTotalByFieldName']('paidTotal');
         },
-        totalToday () {
-            return this.$store.getters['wallet/getTotalByFieldName']('todayTotal');
+        totalCurrent () {
+            return this.$store.getters['wallet/getTotalByFieldName']('currentTotal');
         },
         profit () {
-            return this.totalToday - this.totalPaid;
+            return this.totalCurrent - this.totalPaid;
         }
     },
     watch: {
@@ -171,7 +180,7 @@ export default {
         value(val) {
             if (val < 100) return
 
-            this.$store.dispatch('wallet/index');
+            // this.$store.dispatch('wallet/index');
 
             this.value = 0
             this.startBuffer()
@@ -179,7 +188,11 @@ export default {
     },
 
     created() {
-        // this.startBuffer()
+        // this.$store.subscribe((mutation) => {
+        //     if (mutation.type === 'ticker/update') {
+        //         // this.$store.dispatch('wallet/index')
+        //     }
+        // })
     },
 
     beforeDestroy() {
@@ -241,6 +254,10 @@ export default {
             this.interval = setInterval(() => {
                 this.value += 1
             }, 1000)
+        },
+
+        openTickerDetails(item){
+            this.showTickerDetailsModal = true;
         }
     }
 }
