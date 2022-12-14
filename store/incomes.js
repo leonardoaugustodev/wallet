@@ -26,7 +26,7 @@ export const getters = {
             }
         })
 
-        return state.incomes.reduce((acc, cv) => {
+        const result = state.incomes.reduce((acc, cv) => {
             const currentDate = `${new Date(cv.date).getFullYear()}-${
                 new Date(cv.date).getMonth() + 1
             }`
@@ -43,6 +43,8 @@ export const getters = {
             existingReduce.amount += parseFloat(cv.amount)
             return acc
         }, initialSummary)
+
+        return result.reverse()
     },
 }
 
@@ -75,8 +77,11 @@ export const actions = {
             return Promise.reject(e)
         }
     },
-    async create({ commit, rootGetters }, income) {
+    async create({ commit, dispatch, rootGetters, rootState }, income) {
         try {
+
+            await dispatch('wallet/index', null, {root: true});
+
             const ref = this.$fire.firestore.collection('incomes').doc()
             income._id = ref.id
             income._userUID = rootGetters['users/getUserUID']
@@ -84,15 +89,19 @@ export const actions = {
                 this.$fireModule.firestore.FieldValue.serverTimestamp()
             income._updatedAt =
                 this.$fireModule.firestore.FieldValue.serverTimestamp()
-            // income.date = new Date(new Date(income.date).getTime() + (new Date().getTimezoneOffset() * 60000))
 
             income.unitDividend = Number(
                 (income?.amount || 0) / (income?.quantity || 1)
             )
-            income.unitPrice = Number(income?.ticker.unitPrice || 1)
+
+            const ticketFromWallet = rootState.wallet.wallet.find(w => w.ticker.code === income.ticker.code)
+            income.unitPrice = Number(ticketFromWallet?.paidValue || 0)
             income.yield = Number(
                 (income.unitDividend || 0) / (income.unitPrice || 1)
             )
+
+            const ticker = rootGetters['ticker/getTickerByCode'](income.ticker.code)
+            income.ticker = structuredClone(ticker)
 
             await ref.set(income)
             commit('create', income)

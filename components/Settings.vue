@@ -60,8 +60,11 @@ v-model="model" :items="items" :search-input.sync="search"
                     <v-tab-item>
                         <v-card flat>
                             <v-card-text>
-                                <v-btn outlined block color="primary" @click="loadTestData">
-                                    Load Test Data
+                                <v-btn outlined block color="primary" @click="loadEntryData">
+                                    Load Entries Data
+                                </v-btn>
+                                <v-btn outlined block color="primary" @click="loadIncomeData">
+                                    Load Income Data
                                 </v-btn>
                             </v-card-text>
                         </v-card>
@@ -86,6 +89,7 @@ v-model="model" :items="items" :search-input.sync="search"
 
 <script>
 import { data } from '~/static/testData.js'
+import { incomeData } from '~/static/incomeData.js'
 
 export default {
     name: 'Settings',
@@ -107,11 +111,16 @@ export default {
     created() {
     },
     methods: {
-        loadTestData() {
+        loadEntryData() {
             data.forEach((d) => this.$store.dispatch(
                 'entries/create', d
             ));
         },
+        loadIncomeData() {
+            incomeData.forEach((d) => this.$store.dispatch(
+                'incomes/create', d
+            ));
+        },  
         handleInvestmentTypeInput(typeName) {
             typeName.forEach(name => {
                 this.$store.commit('addInvestmentType', name);

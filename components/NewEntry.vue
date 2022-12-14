@@ -5,7 +5,7 @@
             <v-btn
                 color="primary"
                 dark
-                class="mb-2"
+                depressed
                 v-bind="attrs"
                 small
                 v-on="on"

@@ -2,15 +2,16 @@
 //
 // The variables you want to modify
 // $font-size-root: 20px;
+
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans&family=Ubuntu&display=swap');
 $body-font-family: 'Open Sans', serif;
 
-
+// #6546d2
 $material-dark-elevation-colors: (
   (
-    '0': hsl(261, 33%, 15%),
-    '1': hsl(261, 19%, 16%),
-    '2': hsl(261, 19%, 15%),
+    '0': hsl(247, 30%, 17%),
+    '1': hsl(240, 27%, 19%),
+    '2': hsl(234, 18%, 21%),
     '3': hsl(261, 9%, 25%),
     '4': hsl(261, 9%, 30%),
     '6': rgb(99, 93, 111),
@@ -22,13 +23,16 @@ $material-dark-elevation-colors: (
 );
 
 $material-dark: (
+  'app-bar': map-get($material-dark-elevation-colors, '1'),
   'background': map-get($material-dark-elevation-colors, '0'),
-  'navigation-drawer': map-get($material-dark-elevation-colors, '2'),
+  'cards': map-get($material-dark-elevation-colors, '1'),
   'table': (
-    'active': #505050,
+    'active': map-get($material-dark-elevation-colors, '6'),
     'hover': map-get($material-dark-elevation-colors, '4'),
-    'group': map-get($material-dark-elevation-colors, '4'),
+    'group': map-get($material-dark-elevation-colors, '2'),
   ),
+  'toolbar': map-get($material-dark-elevation-colors, '2'),
+  'surface': #da1111,
 );
 
 

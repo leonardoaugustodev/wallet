@@ -13,9 +13,15 @@ export default ({ app, store }, inject) => {
         },
         getColor(value) {
             value = parseFloat(value)
-            if (value > 0) return 'green'
+            if (value > 0) return 'success'
             else if (value === 0) return 'gray'
-            else return 'deep-orange darken-4'
+            else return 'accent'
         },
+        getTextColor(value){
+            value = parseFloat(value)
+            if (value > 0) return 'success--text'
+            else if (value === 0) return 'gray--text'
+            else return 'error--text'
+        }
     })
 }

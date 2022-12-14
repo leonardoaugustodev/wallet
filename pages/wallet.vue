@@ -1,15 +1,20 @@
 <template>
-
     <v-row justify="center" align="center">
         <v-col cols="12">
-
-            <v-progress-linear v-model="value" color="deep-purple"></v-progress-linear>
-
-            <v-data-table
-:headers="headers" :items="entries" sort-by="tickerCode" :items-per-page="-1" class="elevation-1" dense
-                group-by="ticker.group" :loading="loadingWallet">
-                <template #top>
-                    <v-toolbar flat>
+            <!-- <v-progress-linear v-model="value" color="deep-purple"></v-progress-linear> -->
+            <v-card class="pa-4">
+                <v-card-title>Wallet</v-card-title>
+                <v-data-table
+                    :headers="headers"
+                    :items="entries"
+                    sort-by="tickerCode"
+                    :items-per-page="-1"
+                    dense
+                    group-by="ticker.group"
+                    :loading="loadingWallet"
+                >
+                    <!-- <template #top>
+                    <v-toolbar>
                         <v-toolbar-title>Wallet</v-toolbar-title>
                         <v-spacer></v-spacer>
                         <div class="ma-2" outlined>
@@ -26,60 +31,87 @@
                         </div>
 
                     </v-toolbar>
-                </template>
+                </template> -->
 
-                <template #item.ticker.code="{ item }">
-                    <TickerDetails :ticker="item"></TickerDetails>
-                </template>
+                    <template #item.ticker.code="{ item }">
+                        <TickerDetails :ticker="item"></TickerDetails>
+                    </template>
 
-                <template #item.currentPrice="{ item }">
-                    <span class="amber--text">
-                        {{ $utils.formatCurrency(item.currentPrice) }}
-                    </span>
-                </template>
-                <template #item.currentTotal="{ item }">
-                    {{ $utils.formatCurrency(item.currentTotal) }}
-                </template>
-                <template #item.paidValue="{ item }">
-                    {{ $utils.formatCurrency(item.paidValue) }}
-                </template>
-                <template #item.paidTotal="{ item }">
-                    {{ $utils.formatCurrency(item.paidTotal) }}
-                </template>
-                <template #item.incomes="{ item }">
-                    {{ $utils.formatCurrency(item.incomes) }}
-                </template>
-                <template #item.profit="{ item }">
-                    <v-chip :color="$utils.getColor(item.profit)" dark label small>
-                        {{ $utils.formatCurrency(item.profit) }}
-                    </v-chip>
-                </template>
-                <template #item.profitPercentage="{ item }">
-                    <v-chip :color="$utils.getColor(item.profitPercentage)" dark label small>
-                        {{ $utils.formatPercentage(item.profitPercentage) }}
-                    </v-chip>
-                </template>
-                <template #item.profitPlusIncome="{ item }">
-                    <v-chip :color="$utils.getColor(item.profitPlusIncome)" dark label small>
-                        {{ $utils.formatCurrency(item.profitPlusIncome) }}
-                    </v-chip>
-                </template>
-                <template #item.profitPlusIncomePercentage="{ item }">
-                    <v-chip :color="$utils.getColor(item.profitPlusIncomePercentage)" dark label small>
-                        {{ $utils.formatPercentage(item.profitPlusIncomePercentage) }}
-                    </v-chip>
-                </template>
-                <template #item.position="{ item }">
-                    {{ $utils.formatPercentage(item.position) }}
-                </template>
-                <template #no-data>
-                    No data to show!
-                </template>
-            </v-data-table>
+                    <template #item.currentPrice="{ item }">
+                        <span class="amber--text">
+                            {{ $utils.formatCurrency(item.currentPrice) }}
+                        </span>
+                    </template>
+                    <template #item.currentTotal="{ item }">
+                        {{ $utils.formatCurrency(item.currentTotal) }}
+                    </template>
+                    <template #item.paidValue="{ item }">
+                        {{ $utils.formatCurrency(item.paidValue) }}
+                    </template>
+                    <template #item.paidTotal="{ item }">
+                        {{ $utils.formatCurrency(item.paidTotal) }}
+                    </template>
+                    <template #item.incomes="{ item }">
+                        {{ $utils.formatCurrency(item.incomes) }}
+                    </template>
+                    <template #item.profit="{ item }">
+                        <v-chip
+                            :color="$utils.getColor(item.profit)"
+                            dark
+                            label
+                            small
+                        >
+                            {{ $utils.formatCurrency(item.profit) }}
+                        </v-chip>
+                    </template>
+                    <template #item.profitPercentage="{ item }">
+                        <v-chip
+                            :color="$utils.getColor(item.profitPercentage)"
+                            dark
+                            label
+                            small
+                        >
+                            {{ $utils.formatPercentage(item.profitPercentage) }}
+                        </v-chip>
+                    </template>
+                    <template #item.profitPlusIncome="{ item }">
+                        <v-chip
+                            :color="$utils.getColor(item.profitPlusIncome)"
+                            dark
+                            label
+                            small
+                        >
+                            {{ $utils.formatCurrency(item.profitPlusIncome) }}
+                        </v-chip>
+                    </template>
+                    <template #item.profitPlusIncomePercentage="{ item }">
+                        <v-chip
+                            :color="
+                                $utils.getColor(item.profitPlusIncomePercentage)
+                            "
+                            dark
+                            label
+                            small
+                        >
+                            {{
+                                $utils.formatPercentage(
+                                    item.profitPlusIncomePercentage
+                                )
+                            }}
+                        </v-chip>
+                    </template>
+                    <template #item.position="{ item }">
+                        {{ $utils.formatPercentage(item.position) }}
+                    </template>
+                    <template #no-data> No data to show! </template>
+                </v-data-table>
 
-            <span class="d-flex justify-end text--secondary text-caption mt-1">
-                {{ `Last refresh: ${lastRefresh}` }}
-            </span>
+                <span
+                    class="d-flex justify-end text--secondary text-caption mt-1"
+                >
+                    {{ `Last refresh: ${lastRefresh?.toLocaleTimeString()}` }}
+                </span>
+            </v-card>
         </v-col>
     </v-row>
 </template>
@@ -88,7 +120,7 @@
 import TickerDetails from '~/components/TickerDetails.vue'
 export default {
     name: 'WalletPage',
-    components: {TickerDetails},
+    components: { TickerDetails },
     data() {
         return {
             dialog: false,
@@ -99,23 +131,31 @@ export default {
             menu2: false,
             editedItem: {
                 tickerCode: '',
-                date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+                date: new Date(
+                    Date.now() - new Date().getTimezoneOffset() * 60000
+                )
+                    .toISOString()
+                    .substr(0, 10),
                 group: '',
                 description: '',
                 unitPrice: 0,
                 quantity: 0,
                 tax: 0,
-                total: 0
+                total: 0,
             },
             defaultItem: {
                 tickerCode: '',
-                date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+                date: new Date(
+                    Date.now() - new Date().getTimezoneOffset() * 60000
+                )
+                    .toISOString()
+                    .substr(0, 10),
                 group: '',
                 description: '',
                 unitPrice: 0,
                 quantity: 0,
                 tax: 0,
-                total: 0
+                total: 0,
             },
             headers: [
                 {
@@ -142,36 +182,43 @@ export default {
                 { text: 'Profit %', value: 'profitPercentage' },
                 { text: 'Incomes', value: 'incomes' },
                 { text: 'Profit + Inc.', value: 'profitPlusIncome' },
-                { text: 'Profit + Inc. %', value: 'profitPlusIncomePercentage' },
-                { text: 'Position', value: 'position' }
+                {
+                    text: 'Profit + Inc. %',
+                    value: 'profitPlusIncomePercentage',
+                },
+                { text: 'Position', value: 'position' },
             ],
             value: 0,
             interval: 0,
-            showTickerDetailsModal: false
+            showTickerDetailsModal: false,
         }
     },
     computed: {
         entries() {
-            return this.$store.state?.wallet?.wallet || [];
+            return this.$store.state?.wallet?.wallet || []
         },
         lastRefresh() {
-            return this.$store.state.wallet.lastRefresh;
+            return this.$store.state.wallet.lastRefresh
         },
         formTitle() {
             return this.editedIndex === -1 ? 'New Entry' : 'Edit Entry'
         },
-        totalPaid () {
-            return this.$store.getters['wallet/getTotalByFieldName']('paidTotal');
+        totalPaid() {
+            return this.$store.getters['wallet/getTotalByFieldName'](
+                'paidTotal'
+            )
         },
-        totalCurrent () {
-            return this.$store.getters['wallet/getTotalByFieldName']('currentTotal');
+        totalCurrent() {
+            return this.$store.getters['wallet/getTotalByFieldName'](
+                'currentTotal'
+            )
         },
-        profit () {
-            return this.totalCurrent - this.totalPaid;
+        profit() {
+            return this.totalCurrent - this.totalPaid
         },
-        loadingWallet(){
-            return this.$store.state.wallet.isLoading;
-        }
+        loadingWallet() {
+            return this.$store.state.wallet.isLoading
+        },
     },
     watch: {
         dialog(val) {
@@ -203,8 +250,6 @@ export default {
     },
 
     methods: {
-
-
         editItem(item) {
             this.editedIndex = this.entries.indexOf(item)
             this.editedItem = Object.assign({}, item)
@@ -248,7 +293,8 @@ export default {
         },
 
         updateEntryTotal() {
-            this.editedItem.total = this.editedItem.quantity * this.editedItem.unitPrice;
+            this.editedItem.total =
+                this.editedItem.quantity * this.editedItem.unitPrice
         },
 
         startBuffer() {
@@ -259,9 +305,9 @@ export default {
             }, 1000)
         },
 
-        openTickerDetails(item){
-            this.showTickerDetailsModal = true;
-        }
-    }
+        openTickerDetails(item) {
+            this.showTickerDetailsModal = true
+        },
+    },
 }
 </script>

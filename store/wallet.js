@@ -1,6 +1,6 @@
 export const state = () => ({
     wallet: [],
-    lastRefresh: new Date().toLocaleTimeString(),
+    lastRefresh: null,
     isLoading: false
 })
 
@@ -17,7 +17,7 @@ export const mutations = {
         state.wallet = wallet
     },
     updateLastRefresh(state) {
-        state.lastRefresh = new Date().toLocaleTimeString()
+        state.lastRefresh = new Date()
     },
     turnOnLoading(state){
         state.isLoading = true;
@@ -28,8 +28,10 @@ export const mutations = {
 }
 
 export const actions = {
-    async index({ commit, dispatch, rootState, rootGetters }) {
+    async index({ state, commit, dispatch, rootState, rootGetters }) {
         try {
+
+            if(state.lastRefresh && (new Date() - state.lastRefresh) < 900000) return;
 
             commit('turnOnLoading');
             const wallet = [];

@@ -58,7 +58,24 @@ export const getters = {
 
             return acc
         }, {})
-    }
+    },
+    summarizeInvestedThisMonth(state) {     
+        const currentMonth = new Date().getMonth();
+        console.log(currentMonth)
+        const entries = state.entries.filter(x => {
+            const entryMonth = new Date(x.date).getMonth()
+            return entryMonth === currentMonth
+        })
+
+        return entries.reduce((acc, cv) => {
+            return acc + cv.total
+        }, 0)
+    },
+    summarizeInvestedTotal(state) {     
+        return state.entries.reduce((acc, cv) => {
+            return acc + cv.total
+        }, 0)
+    },
 }
 
 export const mutations = {

@@ -11,7 +11,7 @@
                         <!-- EDIT MODAL -->
                         <v-dialog v-model="dialog" max-width="500px" persistent>
                             <template #activator="{ on, attrs }">
-                                <v-btn color="primary" dark class="mb-2" v-bind="attrs" small v-on="on">
+                                <v-btn color="primary" v-bind="attrs" small v-on="on" depressed>
                                     New Income
                                 </v-btn>
                             </template>
@@ -51,7 +51,7 @@ v-model="
 v-model="
                                                     editedItem.ticker
                                                 " :items="availableTickers" :rules="[rules.required]" item-text="code"
-                                                    label="Ticker" outlined dense @change="getTickerData"></v-combobox>
+                                                    label="Ticker" outlined dense></v-combobox>
 
                                                 <!-- TYPE -->
                                                 <v-combobox
@@ -79,11 +79,11 @@ v-model="
                                 </v-card-text>
 
                                 <v-card-actions>
-                                    <v-spacer></v-spacer>
-                                    <v-btn color="blue darken-1" text @click="close">
+                                    <v-btn color="error" text @click="close">
                                         Cancel
                                     </v-btn>
-                                    <v-btn color="blue darken-1" text @click="save">
+                                    <v-spacer></v-spacer>
+                                    <v-btn color="primary" text @click="save">
                                         Save
                                     </v-btn>
                                 </v-card-actions>
@@ -314,25 +314,6 @@ export default {
             this.editedItem.total =
                 this.editedItem.quantity * this.editedItem.unitPrice
         },
-
-        async getTickerData(evt) {
-
-            try {
-                const source = this.$store.getters.getInvestmentTypeByName(evt.group)?.priceSource;
-                if(!source || source !== 'bovespa') return;
-
-                const ticker = await this.$brapi.getQuotes(this.editedItem.ticker.code);
-                if (!ticker || !ticker.results || !ticker.results.length) return;
-
-                const retrievedTicker = ticker.results[0];
-                this.editedItem.ticker.unitPrice = retrievedTicker.regularMarketPrice;
-
-            }
-            catch (err) {
-                console.log(err);
-            }
-
-        }
     },
 }
 </script>

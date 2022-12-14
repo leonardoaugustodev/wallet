@@ -1,5 +1,5 @@
 <template>
-    <v-app dark>
+    <v-app>
         <Snackbar></Snackbar>
 
         <v-app-bar v-if="userIsAuthenticated" app flat>
@@ -75,6 +75,9 @@ export default {
         }
     },
     created() {
+        
+        if(!this.userIsAuthenticated) this.$router.push('/login')
+
         this.initialize()
     },
 

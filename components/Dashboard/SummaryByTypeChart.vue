@@ -1,47 +1,59 @@
 <template>
     <client-only>
-        <ApexChart type="donut" :options="chartOptions" :series="chartData"></ApexChart>
+        <ApexChart
+            type="pie"
+            :options="chartOptions"
+            :series="chartData"
+        ></ApexChart>
     </client-only>
 </template>
 
 <script>
-
 export default {
     data() {
-        return {
-
-        }
+        return {}
     },
     computed: {
         summary() {
             return this.$store.getters['entries/summarizeByType']
         },
         chartData() {
-            return this.summary != null ? Object.keys(this.summary).map(x => Number(this.summary[x].total.toFixed(2))) : [];
+            return this.summary != null
+                ? Object.keys(this.summary).map((x) =>
+                      Number(this.summary[x].total.toFixed(2))
+                  )
+                : []
         },
         chartOptions() {
             return {
                 chart: {
                     id: 'summary-by-type',
                     redrawOnParentResize: true,
-                    redrawOnWindowResize: true
+                    redrawOnWindowResize: true,
                 },
                 labels: Object.keys(this.summary),
                 grid: {
-                    borderColor: 'transparent'
+                    borderColor: 'transparent',
                 },
                 stroke: {
-                    show: false
+                    show: false,
                 },
                 legend: {
                     labels: {
-                        colors: '#FFF'
+                        colors: '#FFF',
                     },
-                    position: 'bottom'
+                    position: 'bottom',
                 },
-
+                theme: {
+                    palette: 'palette10',
+                },
+                tooltip: {
+                    formatter: function (val) {
+                        return `@@${val}`
+                    },
+                }
             }
-        }
-    }
+        },
+    },
 }
 </script>
