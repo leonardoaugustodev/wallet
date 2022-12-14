@@ -7,7 +7,7 @@
 
             <v-data-table
 :headers="headers" :items="entries" sort-by="tickerCode" :items-per-page="-1" class="elevation-1" dense
-                group-by="ticker.group">
+                group-by="ticker.group" :loading="loadingWallet">
                 <template #top>
                     <v-toolbar flat>
                         <v-toolbar-title>Wallet</v-toolbar-title>
@@ -33,7 +33,7 @@
                 </template>
 
                 <template #item.currentPrice="{ item }">
-                    <span class="primary--text">
+                    <span class="amber--text">
                         {{ $utils.formatCurrency(item.currentPrice) }}
                     </span>
                 </template>
@@ -168,6 +168,9 @@ export default {
         },
         profit () {
             return this.totalCurrent - this.totalPaid;
+        },
+        loadingWallet(){
+            return this.$store.state.wallet.isLoading;
         }
     },
     watch: {

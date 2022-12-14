@@ -87,7 +87,7 @@ export const actions = {
         const tickers = state.tickers.map((t) => {
             return {
                 ...t,
-                source: types.find((x) => x.name === t.group).priceSource,
+                source: types.find((x) => x.name === t.group)?.priceSource,
             }
         })
 

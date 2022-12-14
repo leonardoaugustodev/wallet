@@ -288,7 +288,7 @@ export const data = [
     {
       "ticker": {
         "code": "BTLG11",
-        "group": "Real State"
+        "group": "REIT"
       },
       "date": "2022-01-19",
       "description": "Trade",
@@ -299,7 +299,7 @@ export const data = [
     {
       "ticker": {
         "code": "HGRU11",
-        "group": "Real State"
+        "group": "REIT"
       },
       "date": "2022-01-19",
       "description": "Trade",
@@ -310,7 +310,7 @@ export const data = [
     {
       "ticker": {
         "code": "MALL11",
-        "group": "Real State"
+        "group": "REIT"
       },
       "date": "2022-01-19",
       "description": "Trade",
@@ -321,7 +321,7 @@ export const data = [
     {
       "ticker": {
         "code": "MCCI11",
-        "group": "Real State"
+        "group": "REIT"
       },
       "date": "2022-01-19",
       "description": "Trade",
@@ -332,7 +332,7 @@ export const data = [
     {
       "ticker": {
         "code": "PVBI11",
-        "group": "Real State"
+        "group": "REIT"
       },
       "date": "2022-01-19",
       "description": "Trade",
@@ -343,7 +343,7 @@ export const data = [
     {
       "ticker": {
         "code": "DEVA11",
-        "group": "Real State"
+        "group": "REIT"
       },
       "date": "2022-02-14",
       "description": "Trade",
@@ -354,7 +354,7 @@ export const data = [
     {
       "ticker": {
         "code": "HGRE11",
-        "group": "Real State"
+        "group": "REIT"
       },
       "date": "2022-02-14",
       "description": "Trade",
@@ -365,7 +365,7 @@ export const data = [
     {
       "ticker": {
         "code": "HSLG11",
-        "group": "Real State"
+        "group": "REIT"
       },
       "date": "2022-02-14",
       "description": "Trade",
@@ -376,7 +376,7 @@ export const data = [
     {
       "ticker": {
         "code": "VGIR11",
-        "group": "Real State"
+        "group": "REIT"
       },
       "date": "2022-02-14",
       "description": "Trade",
@@ -387,7 +387,7 @@ export const data = [
     {
       "ticker": {
         "code": "BTLG11",
-        "group": "Real State"
+        "group": "REIT"
       },
       "date": "2022-03-16",
       "description": "Trade",
@@ -398,7 +398,7 @@ export const data = [
     {
       "ticker": {
         "code": "DEVA11",
-        "group": "Real State"
+        "group": "REIT"
       },
       "date": "2022-03-16",
       "description": "Trade",
@@ -409,7 +409,7 @@ export const data = [
     {
       "ticker": {
         "code": "HGRU11",
-        "group": "Real State"
+        "group": "REIT"
       },
       "date": "2022-03-16",
       "description": "Trade",
@@ -420,7 +420,7 @@ export const data = [
     {
       "ticker": {
         "code": "HSLG11",
-        "group": "Real State"
+        "group": "REIT"
       },
       "date": "2022-03-16",
       "description": "Trade",
@@ -431,7 +431,7 @@ export const data = [
     {
       "ticker": {
         "code": "VGIR11",
-        "group": "Real State"
+        "group": "REIT"
       },
       "date": "2022-03-16",
       "description": "Trade",
@@ -442,7 +442,7 @@ export const data = [
     {
       "ticker": {
         "code": "VGIR11",
-        "group": "Real State"
+        "group": "REIT"
       },
       "date": "2022-09-08",
       "description": "Split",
@@ -453,7 +453,7 @@ export const data = [
     {
       "ticker": {
         "code": "MALL11",
-        "group": "Real State"
+        "group": "REIT"
       },
       "date": "2022-11-29",
       "description": "Trade",
@@ -464,7 +464,7 @@ export const data = [
     {
       "ticker": {
         "code": "MCCI11",
-        "group": "Real State"
+        "group": "REIT"
       },
       "date": "2022-11-29",
       "description": "Trade",
@@ -475,7 +475,7 @@ export const data = [
     {
       "ticker": {
         "code": "PVBI11",
-        "group": "Real State"
+        "group": "REIT"
       },
       "date": "2022-11-29",
       "description": "Trade",
@@ -486,7 +486,7 @@ export const data = [
     {
       "ticker": {
         "code": "BTLG11",
-        "group": "Real State"
+        "group": "REIT"
       },
       "date": "2022-11-29",
       "description": "Trade",
@@ -497,7 +497,7 @@ export const data = [
     {
       "ticker": {
         "code": "DEVA11",
-        "group": "Real State"
+        "group": "REIT"
       },
       "date": "2022-11-29",
       "description": "Trade",
@@ -508,7 +508,7 @@ export const data = [
     {
       "ticker": {
         "code": "HGRE11",
-        "group": "Real State"
+        "group": "REIT"
       },
       "date": "2022-11-29",
       "description": "Trade",
@@ -519,7 +519,7 @@ export const data = [
     {
       "ticker": {
         "code": "HGRU11",
-        "group": "Real State"
+        "group": "REIT"
       },
       "date": "2022-11-29",
       "description": "Trade",
@@ -530,7 +530,7 @@ export const data = [
     {
       "ticker": {
         "code": "HSLG11",
-        "group": "Real State"
+        "group": "REIT"
       },
       "date": "2022-11-29",
       "description": "Trade",
@@ -541,7 +541,7 @@ export const data = [
     {
       "ticker": {
         "code": "HSML11",
-        "group": "Real State"
+        "group": "REIT"
       },
       "date": "2022-11-29",
       "description": "Trade",
@@ -552,7 +552,7 @@ export const data = [
     {
       "ticker": {
         "code": "RBRF11",
-        "group": "Real State"
+        "group": "REIT"
       },
       "date": "2022-11-29",
       "description": "Trade",
@@ -563,7 +563,7 @@ export const data = [
     {
       "ticker": {
         "code": "VGIR11",
-        "group": "Real State"
+        "group": "REIT"
       },
       "date": "2022-11-29",
       "description": "Trade",
@@ -1045,4 +1045,3 @@ export const data = [
       "total": "4,000.00"
     }
   ]
-  

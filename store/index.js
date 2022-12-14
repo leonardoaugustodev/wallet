@@ -4,6 +4,7 @@ export const state = () => ({
         { name: 'Stock', priceSource: 'bovespa' },
         { name: 'Fixed Income', priceSource: null },
         { name: 'REIT', priceSource: 'bovespa' },
+        { name: 'International', priceSource: 'bovespa' },
         { name: 'Crypto', priceSource: null },
         { name: 'Emergency Fund', priceSource: null },
     ],
@@ -25,7 +26,7 @@ export const mutations = {
     toggleOffSettings(state) {
         state.showSettings = true
     },
-    addInvestmentType(state, typeName){ 
+    addInvestmentType(state, typeName){
         const existingType = state.investmentTypes.find((e) => e.name === typeName);
 
         if(!existingType){

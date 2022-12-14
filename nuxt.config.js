@@ -31,6 +31,7 @@ export default {
         '~/plugins/notifier.js',
         '~/plugins/utils.js',
         '~/plugins/brapi.js',
+        { src: '~/plugins/apexchart.js', ssr: false },
     ],
 
     // Auto import components: https://go.nuxtjs.dev/config-components
@@ -78,7 +79,7 @@ export default {
                 emulatorPort:
                     process.env.NODE_ENV === 'development' ? 9099 : undefined,
                 emulatorHost: 'http://localhost',
-                disableEmulatorWarnings: true
+                disableEmulatorWarnings: true,
             },
             firestore: {
                 emulatorPort:

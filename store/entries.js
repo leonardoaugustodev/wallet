@@ -5,7 +5,7 @@ export const state = () => ({
 export const getters = {
     getTickerCodes(state) {
         const tickerCodes = state.entries.map((e) => e.ticker.code)
-        var unique = tickerCodes.filter((v, i, a) => a.indexOf(v) === i);
+        const unique = tickerCodes.filter((v, i, a) => a.indexOf(v) === i);
         return unique
     },
     getEntryByTicker: (state) => (tickerCode) => {
@@ -16,7 +16,7 @@ export const getters = {
             .filter((s) => s.ticker.group === type)
             .map((e) => e.ticker.code)
     },
-    getTotalsByStock: (state) => {
+    summarizeByTicker: (state) => {
         return state.entries.reduce((acc, entry) => {
             let reduced = acc[entry.ticker.code]
 
@@ -38,6 +38,27 @@ export const getters = {
             return acc
         }, {})
     },
+    summarizeByType: (state) => {
+        return state.entries.reduce((acc, entry) => {
+            let reduced = acc[entry.ticker.group]
+
+            if (!reduced) {
+                reduced = {
+                    quantity: 0,
+                    price: 0,
+                    total: 0,
+                }
+            }
+
+            reduced.quantity += Number(entry?.quantity || 0)
+            reduced.total += Number(entry?.total || 0)
+            reduced.price = Number(reduced.total / reduced.quantity)
+
+            acc[entry.ticker.group] = reduced
+
+            return acc
+        }, {})
+    }
 }
 
 export const mutations = {

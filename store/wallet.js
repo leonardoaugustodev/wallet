@@ -1,6 +1,7 @@
 export const state = () => ({
     wallet: [],
-    lastRefresh: new Date().toLocaleTimeString()
+    lastRefresh: new Date().toLocaleTimeString(),
+    isLoading: false
 })
 
 export const getters = {
@@ -17,6 +18,12 @@ export const mutations = {
     },
     updateLastRefresh(state) {
         state.lastRefresh = new Date().toLocaleTimeString()
+    },
+    turnOnLoading(state){
+        state.isLoading = true;
+    },
+    turnOffLoading(state){
+        state.isLoading = false;
     }
 }
 
@@ -24,6 +31,7 @@ export const actions = {
     async index({ commit, dispatch, rootState, rootGetters }) {
         try {
 
+            commit('turnOnLoading');
             const wallet = [];
 
             const entries = rootState.entries.entries || [];
@@ -34,13 +42,13 @@ export const actions = {
 
             await dispatch('ticker/sync', null, {root: true});
 
-            const summary = rootGetters['entries/getTotalsByStock'];
+            const summary = rootGetters['entries/summarizeByTicker'];
 
             // MERGE WITH SERVER DATA
             for (const tickerCode in summary) {
                 const entry = summary[tickerCode]
                 if(entry?.quantity <= 0) continue
-                
+
                 const existingTicker = rootGetters['ticker/getTickerByCode'](tickerCode)
 
                 entry.currentTotal = existingTicker.currentPrice * entry?.quantity;
@@ -73,6 +81,9 @@ export const actions = {
         }
         catch (err) {
             console.log(err);
+        }
+        finally {
+            commit('turnOffLoading');
         }
     },
     calculatePosition({state, commit, getters}) {

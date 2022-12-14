@@ -40,6 +40,11 @@ export default {
             fixed: false,
             items: [
                 {
+                    icon: 'mdi-dashboard',
+                    title: 'Dashboard',
+                    to: '/',
+                },
+                {
                     icon: 'mdi-wallet',
                     title: 'Wallet',
                     to: '/wallet',
@@ -65,7 +70,7 @@ export default {
         showSettings() {
             return this.$store.state.showSettings;
         },
-        userIsAuthenticated(){
+        userIsAuthenticated() {
             return this.$store.state.users.user.uid != null;
         }
     },
