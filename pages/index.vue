@@ -8,7 +8,9 @@
             </v-col>
             <v-col cols="12" lg="4" md="6">
                 <v-card class="pa-2">
-                    One of three columns
+                    <v-card-title>Incomes last year</v-card-title>
+
+                    <Incomes30DaysChart></Incomes30DaysChart>
                 </v-card>
             </v-col>
             <v-col cols="12" lg="4" md="6">
@@ -32,9 +34,10 @@
 </template>
 <script>
 import SummaryByTypeChart from '~/components/Dashboard/SummaryByTypeChart.vue';
+import Incomes30DaysChart from '~/components/Dashboard/Incomes30DaysChart.vue';
 export default {
     name: 'IndexPage',
-    components: { SummaryByTypeChart },
+    components: { SummaryByTypeChart, Incomes30DaysChart },
     data() {
         return {
         }
