@@ -36,9 +36,10 @@ export default {
                     treemap: {
                         distributed: true,
                         enableShades: false,
+                        useFillColorAsStroke: true
                     },
                 },
-
+                
                 theme: {
                     palette: 'palette10',
                 },
@@ -46,6 +47,7 @@ export default {
                     enabled: true,
                     style: {
                         fontSize: '14px',
+                        colors: ['#ddd']
                     },
                     formatter: (text, op) => {
                         return [text, this.$utils.formatCurrency(op.value), this.$utils.formatPercentage(op.value / this.total)]

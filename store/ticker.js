@@ -108,7 +108,7 @@ export const actions = {
 
             commit('update', {
                 ...stateTicker,
-                currentPrice: tickerData.regularMarketPrice,
+                currentPrice: tickerData.regularMarketPrice || 1,
                 name: tickerData.longName,
                 logoUrl: tickerData.logourl,
             })

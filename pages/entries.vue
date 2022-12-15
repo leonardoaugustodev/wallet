@@ -1,38 +1,39 @@
 <template>
     <v-row justify="center" align="center">
         <v-col cols="12">
-            <v-data-table :headers="headers" :items="entries" sort-by="tickerCode" class="elevation-1" dense>
-                <template #top>
-                    <v-toolbar flat>
-                        <v-toolbar-title>Entries</v-toolbar-title>
-                        <v-divider class="mx-4" inset vertical></v-divider>
-                        <v-spacer></v-spacer>
+            <v-card class="pa-4">
+                <v-card-title>
+                    Entries
+                    <v-spacer></v-spacer>
+                    <NewEntry :edited-item="editedItem"></NewEntry>
+                </v-card-title>
 
-                        <NewEntry :edited-item="editedItem"></NewEntry>
-                        
-                    </v-toolbar>
-                </template>
+                <v-data-table
+                    :headers="headers"
+                    :items="entries"
+                    sort-by="tickerCode"
+                >
+                    <template #item.unitPrice="{ item }">
+                        {{ $utils.formatCurrency(item.unitPrice) }}
+                    </template>
 
-                <template #item.unitPrice="{ item }">
-                    {{ $utils.formatCurrency(item.unitPrice) }}
-                </template>
+                    <template #item.quantity="{ item }">
+                        {{ Number(item.quantity).toFixed(2) }}
+                    </template>
 
-                <template #item.quantity="{ item }">
-                    {{ Number(item.quantity).toFixed(2) }}
-                </template>
+                    <template #item.total="{ item }">
+                        {{ $utils.formatCurrency(item.total) }}
+                    </template>
 
-                <template #item.total="{ item }">
-                    {{ $utils.formatCurrency(item.total) }}
-                </template>
+                    <template #item.actions="{ item }">
+                        <v-icon small class="mr-2" @click="editItem(item)">
+                            mdi-pencil
+                        </v-icon>
+                    </template>
 
-                <template #item.actions="{ item }">
-                    <v-icon small class="mr-2" @click="editItem(item)">
-                        mdi-pencil
-                    </v-icon>
-                </template>
-
-                <template #no-data> No data to show. </template>
-            </v-data-table>
+                    <template #no-data> No data to show. </template>
+                </v-data-table>
+            </v-card>
         </v-col>
     </v-row>
 </template>
@@ -57,7 +58,8 @@ export default {
                     name: '',
                 },
                 date: new Date(
-                    new Date().getTime() + new Date().getTimezoneOffset() * 60000
+                    new Date().getTime() +
+                        new Date().getTimezoneOffset() * 60000
                 ).toLocaleDateString(),
                 description: '',
                 unitPrice: 0,
@@ -73,7 +75,8 @@ export default {
                     name: '',
                 },
                 date: new Date(
-                    new Date().getTime() + new Date().getTimezoneOffset() * 60000
+                    new Date().getTime() +
+                        new Date().getTimezoneOffset() * 60000
                 ).toLocaleDateString(),
                 description: '',
                 unitPrice: 0,
@@ -102,7 +105,6 @@ export default {
         entries() {
             return this.$store.state.entries.entries || []
         },
-
     },
     watch: {
         dialog(val) {
@@ -113,11 +115,9 @@ export default {
         },
     },
 
-    created() {
-    },
+    created() {},
 
     methods: {
-
         editItem(item) {
             this.editedIndex = this.entries.indexOf(item)
             this.editedItem = structuredClone(item)
@@ -139,8 +139,13 @@ export default {
                 this.editedIndex = -1
             })
         },
-
-
     },
 }
 </script>
+
+
+<style lang="scss">
+thead {
+    background: $table-header
+}
+</style>

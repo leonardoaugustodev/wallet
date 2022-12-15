@@ -28,10 +28,10 @@ export const mutations = {
 }
 
 export const actions = {
-    async index({ state, commit, dispatch, rootState, rootGetters }) {
+    async index({ state, commit, dispatch, rootState, rootGetters }, byPassLastRefresh = false) {
         try {
 
-            if(state.lastRefresh && (new Date() - state.lastRefresh) < 900000) return;
+            if(!byPassLastRefresh && state.lastRefresh && (new Date() - state.lastRefresh) < 900000) return;
 
             commit('turnOnLoading');
             const wallet = [];

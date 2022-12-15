@@ -1,6 +1,10 @@
 <template>
     <client-only>
-        <ApexChart type="bar" :options="chartOptions" :series="chartData"></ApexChart>
+        <ApexChart
+            type="bar"
+            :options="chartOptions"
+            :series="chartData"
+        ></ApexChart>
     </client-only>
 </template>
 
@@ -14,7 +18,7 @@ export default {
             return this.$store.getters['entries/summarizeInvestedByMonth']
         },
         aggregateByMonth() {
-            const totals = this.summary.map(x => x.total)
+            const totals = this.summary.map((x) => x.total)
             const result = totals.map((x, i) => {
                 return totals.slice(0, i).reduce((acc, cv) => acc + cv, 0)
             })
@@ -29,8 +33,8 @@ export default {
                     data:
                         this.summary != null
                             ? this.summary.map((x) =>
-                                Number(x.total.toFixed(2))
-                            )
+                                  Number(x.total.toFixed(2))
+                              )
                             : [],
                 },
                 {
@@ -39,17 +43,17 @@ export default {
                     data:
                         this.aggregateByMonth != null
                             ? this.aggregateByMonth.map((x) =>
-                                Number(x.toFixed(2))
-                            )
+                                  Number(x.toFixed(2))
+                              )
                             : [],
-                }
+                },
             ]
         },
         chartOptions() {
             return {
                 chart: {
                     foreColor: 'gray',
-type: 'line'
+                    type: 'line',
                 },
                 stroke: {
                     width: 3,
@@ -58,6 +62,13 @@ type: 'line'
                     theme: 'dark',
                     shared: true,
                     intersect: false,
+                    y: {
+                        formatter: (val) => {
+                            return val !== 0
+                                ? this.$utils.formatCurrency(val)
+                                : ''
+                        },
+                    },
                 },
                 grid: {
                     borderColor: 'gray',

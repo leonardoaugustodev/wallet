@@ -97,7 +97,7 @@ export default {
                 ...ticker,
                 ...this.record
             })
-            await this.$store.dispatch('wallet/index')
+            await this.$store.dispatch('wallet/index', true)
             this.menu = false
             this.record.currentPrice = this.ticker.currentPrice
         },
