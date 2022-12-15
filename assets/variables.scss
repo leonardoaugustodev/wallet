@@ -5,6 +5,7 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans&family=Ubuntu&display=swap');
 $body-font-family: 'Open Sans', serif;
+@import '~vuetify/src/styles/styles.sass';
 
 // #6546d2
 $material-dark-elevation-colors: (
@@ -27,12 +28,11 @@ $material-dark: (
   'background': map-get($material-dark-elevation-colors, '0'),
   'cards': map-get($material-dark-elevation-colors, '1'),
   'table': (
-    'active': map-get($material-dark-elevation-colors, '6'),
-    'hover': map-get($material-dark-elevation-colors, '4'),
+    'active': map-get($cyan, 'darken-2'),
+    'hover': map-get($cyan, 'darken-2'),
     'group': map-get($material-dark-elevation-colors, '2'),
   ),
   'toolbar': map-get($material-dark-elevation-colors, '2'),
-  'surface': #da1111,
 );
 
 

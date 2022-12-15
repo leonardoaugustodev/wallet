@@ -9,13 +9,13 @@ export default ({ app, store }, inject) => {
         },
         formatPercentage(value) {
             if (!value) value = 0
-            return `${(value * 100).toFixed(2)}%` 
+            return `${(value * 100).toFixed(2)}%`
         },
         getColor(value) {
             value = parseFloat(value)
             if (value > 0) return 'success'
             else if (value === 0) return 'gray'
-            else return 'accent'
+            else return 'red accent-2'
         },
         getTextColor(value){
             value = parseFloat(value)

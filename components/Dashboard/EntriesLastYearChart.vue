@@ -11,38 +11,59 @@ export default {
     },
     computed: {
         summary() {
-            return this.$store.getters['incomes/summarizeAmountByMonth']
+            return this.$store.getters['entries/summarizeInvestedByMonth']
+        },
+        aggregateByMonth() {
+            const totals = this.summary.map(x => x.total)
+            const result = totals.map((x, i) => {
+                return totals.slice(0, i).reduce((acc, cv) => acc + cv, 0)
+            })
+
+            return result
         },
         chartData() {
             return [
                 {
-                    name: 'Incomes',
+                    name: 'Entries',
+                    type: 'bar',
                     data:
                         this.summary != null
                             ? this.summary.map((x) =>
-                                Number(x.amount.toFixed(2))
+                                Number(x.total.toFixed(2))
                             )
                             : [],
                 },
+                {
+                    name: 'Aggregated',
+                    type: 'line',
+                    data:
+                        this.aggregateByMonth != null
+                            ? this.aggregateByMonth.map((x) =>
+                                Number(x.toFixed(2))
+                            )
+                            : [],
+                }
             ]
         },
         chartOptions() {
             return {
                 chart: {
                     foreColor: 'gray',
+type: 'line'
                 },
                 stroke: {
-                    width: 1,
+                    width: 3,
                 },
                 tooltip: {
                     theme: 'dark',
+                    shared: true,
+                    intersect: false,
                 },
                 grid: {
                     borderColor: 'gray',
                 },
                 xaxis: {
                     categories: this.summary.map((x) => x.date),
-
                     labels: {
                         style: {
                             colors: 'gray',
@@ -60,8 +81,9 @@ export default {
                     enabled: false,
                 },
                 dataLabels: {
+                    enabled: false,
                     formatter: function (val) {
-                        return val > 0 ? val : ''
+                        return val !== 0 ? val : ''
                     },
                 },
                 theme: {

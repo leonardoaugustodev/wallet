@@ -16,6 +16,12 @@ export const getters = {
             .filter((s) => s.ticker.group === type)
             .map((e) => e.ticker.code)
     },
+    getLast10Entries: (state) => {
+        return [...state.entries].sort((a,b) => {
+            if(new Date(a.date) > new Date(b.date)) return -1
+            else return 1
+        }).slice(0,10);
+    },
     summarizeByTicker: (state) => {
         return state.entries.reduce((acc, entry) => {
             let reduced = acc[entry.ticker.code]
@@ -59,9 +65,8 @@ export const getters = {
             return acc
         }, {})
     },
-    summarizeInvestedThisMonth(state) {     
+    summarizeInvestedThisMonth(state) {
         const currentMonth = new Date().getMonth();
-        console.log(currentMonth)
         const entries = state.entries.filter(x => {
             const entryMonth = new Date(x.date).getMonth()
             return entryMonth === currentMonth
@@ -71,11 +76,90 @@ export const getters = {
             return acc + cv.total
         }, 0)
     },
-    summarizeInvestedTotal(state) {     
+    summarizeInvestedTotal(state) {
         return state.entries.reduce((acc, cv) => {
             return acc + cv.total
         }, 0)
     },
+    summarizeInvestedByMonth: (state) => {
+        function subtractMonths(date, months) {
+            date.setMonth(date.getMonth() - months)
+            return date
+        }
+
+        const initialSummary = [...Array(12).keys()].map((i) => {
+            const currentMonthDate = subtractMonths(new Date(), i)
+            const date = `${currentMonthDate.getFullYear()}-${
+                currentMonthDate.getMonth() + 1
+            }`
+            return {
+                date,
+                total: 0,
+            }
+        })
+
+        const result = state.entries.reduce((acc, cv) => {
+            const currentDate = `${new Date(cv.date).getFullYear()}-${
+                new Date(cv.date).getMonth() + 1
+            }`
+            let existingReduce = acc.find((x) => x.date === currentDate)
+
+            if (!existingReduce) {
+                acc.push({
+                    date: currentDate,
+                    total: 0,
+                })
+                existingReduce = acc.find((x) => x.date === currentDate)
+            }
+
+            existingReduce.total += parseFloat(cv.total)
+            return acc
+        }, initialSummary)
+
+        return result.reverse()
+    },
+    // summarizeAggregateInvestedByMonth: (state) => {
+    //     function subtractMonths(date, months) {
+    //         date.setMonth(date.getMonth() - months)
+    //         return date
+    //     }
+
+    //     const initialSummary = [...Array(12).keys()].map((i) => {
+    //         const currentMonthDate = subtractMonths(new Date(), i)
+    //         const date = `${currentMonthDate.getFullYear()}-${
+    //             currentMonthDate.getMonth() + 1
+    //         }`
+    //         return {
+    //             date,
+    //             total: getters.summarizeInvestedDueDate(currentMonthDate) || 0,
+    //         }
+    //     })
+
+    //     const result = state.entries.reduce((acc, cv) => {
+    //         const currentDate = `${new Date(cv.date).getFullYear()}-${
+    //             new Date(cv.date).getMonth() + 1
+    //         }`
+
+    //         let existingReduce = acc.find((x) => x.date === currentDate)
+
+    //         if (!existingReduce) {
+    //             acc.push({
+    //                 date: currentDate,
+    //                 total: 0,
+    //             })
+    //             existingReduce = acc.find((x) => x.date === currentDate)
+    //         }
+
+    //         existingReduce.total += parseFloat(cv.total)
+    //         return acc
+    //     }, initialSummary)
+
+    //     return result.reverse()
+    // },
+    summarizeInvestedDueDate: (state) => (dueDate) => {
+        const entries = state.entries.filter(x => new Date(x.date) <= dueDate)
+        return entries.reduce((acc,cv) => acc + cv.total)
+    }
 }
 
 export const mutations = {

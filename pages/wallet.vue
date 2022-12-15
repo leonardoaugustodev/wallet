@@ -5,14 +5,8 @@
             <v-card class="pa-4">
                 <v-card-title>Wallet</v-card-title>
                 <v-data-table
-                    :headers="headers"
-                    :items="entries"
-                    sort-by="tickerCode"
-                    :items-per-page="-1"
-                    dense
-                    group-by="ticker.group"
-                    :loading="loadingWallet"
-                >
+:headers="headers" :items="entries" sort-by="tickerCode" :items-per-page="-1" dense
+                    group-by="ticker.group" :loading="loadingWallet">
                     <!-- <template #top>
                     <v-toolbar>
                         <v-toolbar-title>Wallet</v-toolbar-title>
@@ -55,49 +49,23 @@
                         {{ $utils.formatCurrency(item.incomes) }}
                     </template>
                     <template #item.profit="{ item }">
-                        <v-chip
-                            :color="$utils.getColor(item.profit)"
-                            dark
-                            label
-                            small
-                        >
+                        <v-chip :color="$utils.getColor(item.profit)" dark label small class="font-weight-black">
                             {{ $utils.formatCurrency(item.profit) }}
                         </v-chip>
                     </template>
                     <template #item.profitPercentage="{ item }">
-                        <v-chip
-                            :color="$utils.getColor(item.profitPercentage)"
-                            dark
-                            label
-                            small
-                        >
+                        <v-chip :color="$utils.getColor(item.profitPercentage)" dark label small class="font-weight-black">
                             {{ $utils.formatPercentage(item.profitPercentage) }}
                         </v-chip>
                     </template>
                     <template #item.profitPlusIncome="{ item }">
-                        <v-chip
-                            :color="$utils.getColor(item.profitPlusIncome)"
-                            dark
-                            label
-                            small
-                        >
+                        <v-chip :color="$utils.getColor(item.profitPlusIncome)" dark label small class="font-weight-black">
                             {{ $utils.formatCurrency(item.profitPlusIncome) }}
                         </v-chip>
                     </template>
                     <template #item.profitPlusIncomePercentage="{ item }">
-                        <v-chip
-                            :color="
-                                $utils.getColor(item.profitPlusIncomePercentage)
-                            "
-                            dark
-                            label
-                            small
-                        >
-                            {{
-                                $utils.formatPercentage(
-                                    item.profitPlusIncomePercentage
-                                )
-                            }}
+                        <v-chip :color="$utils.getColor(item.profitPlusIncomePercentage)" dark label small class="font-weight-black">
+                            {{ $utils.formatPercentage(item.profitPlusIncomePercentage) }}
                         </v-chip>
                     </template>
                     <template #item.position="{ item }">
@@ -106,9 +74,7 @@
                     <template #no-data> No data to show! </template>
                 </v-data-table>
 
-                <span
-                    class="d-flex justify-end text--secondary text-caption mt-1"
-                >
+                <span class="d-flex justify-end text--secondary text-caption mt-1">
                     {{ `Last refresh: ${lastRefresh?.toLocaleTimeString()}` }}
                 </span>
             </v-card>
