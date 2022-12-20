@@ -13,6 +13,13 @@
                     :items="entries"
                     sort-by="tickerCode"
                 >
+
+                    <template #item.ticker.code="{ item }">
+                        <span class="font-weight-bold">
+                            {{ item.ticker.code }}
+                        </span>
+                    </template>
+                    
                     <template #item.unitPrice="{ item }">
                         {{ $utils.formatCurrency(item.unitPrice) }}
                     </template>
@@ -22,7 +29,9 @@
                     </template>
 
                     <template #item.total="{ item }">
-                        {{ $utils.formatCurrency(item.total) }}
+                        <span :class="$utils.getTextColor(item.total)">
+                            {{ $utils.formatCurrency(item.total) }}
+                        </span>
                     </template>
 
                     <template #item.actions="{ item }">

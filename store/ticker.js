@@ -27,8 +27,9 @@ export const mutations = {
 }
 
 export const actions = {
-    async index({ commit }) {
-        const ref = this.$fire.firestore.collection('tickers')
+    async index({ commit, rootGetters }) {
+        const userUID = await rootGetters['users/getUserUID']
+        const ref = this.$fire.firestore.collection('tickers').where("_userUID", "==", userUID )
         try {
             const snapshot = await ref.get()
             const tickers = []
@@ -96,7 +97,7 @@ export const actions = {
             ?.map((x) => x.code)
         if(!bovespaTickers || !bovespaTickers.length) return;
 
-        const tickersData = await this.$brapi.getQuotes(
+        const tickersData = await this.$brapi?.getQuotes(
             bovespaTickers?.join('%2C')
         )
         if (!tickersData || !tickersData.results.length) return

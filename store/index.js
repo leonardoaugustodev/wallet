@@ -34,3 +34,12 @@ export const mutations = {
         }
     }
 }
+
+// export const actions = {
+//     async nuxtServerInit ({ dispatch }, { req }) {
+//         await dispatch('ticker/index')
+//         await dispatch('entries/index')
+//         await dispatch('wallet/index')
+//         await dispatch('incomes/index')
+//     }
+//   }

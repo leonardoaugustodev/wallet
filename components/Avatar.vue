@@ -3,9 +3,8 @@
         <template #activator="{ on }">
             <v-btn icon x-large v-on="on">
                 <v-avatar color="brown" size="32">
-                    <span class="white--text text-body-1">{{
-                        user.initials
-                    }}</span>
+                    <v-img v-if="user.photoURL" :src="user?.photoURL"></v-img>
+                    <span v-else class="white--text text-body-1">{{ initials }}</span>
                 </v-avatar>
             </v-btn>
         </template>
@@ -13,17 +12,14 @@
         <v-card>
             <v-list-item-content class="justify-center">
                 <div class="mx-auto text-center">
-
-                    <h3 class="my-2">{{ user.fullName }}</h3>
+                    <h3 class="my-2">{{ user?.displayName }}</h3>
                     <p class="text-caption mt-1">
-                        {{ user.email }}
+                        {{ user?.email }}
                     </p>
                     <v-divider class="my-2"></v-divider>
-                    <!-- <v-btn block text @click="openSettings" router exact> Settings </v-btn> -->
                     <Settings></Settings>
                     <v-divider class="my-2"></v-divider>
                     <v-btn block text @click="logout"> Logout </v-btn>
-
                 </div>
             </v-list-item-content>
         </v-card>
@@ -37,11 +33,6 @@ export default {
     components: { Settings },
     data() {
         return {
-            user: {
-                initials: 'JD',
-                fullName: 'John Doe',
-                email: 'john.doe@doe.com',
-            },
             options: [
                 {
                     title: 'Settings',
@@ -50,7 +41,22 @@ export default {
             ]
         }
     },
+    computed: {
+        user(){
+            return this.$store.state.users.user
+        },
+        initials(){
+            let rgx = new RegExp(/(\p{L}{1})\p{L}+/, 'gu');
 
+            let initials = [...this.user.displayName.matchAll(rgx)] || [];
+
+            initials = (
+            (initials.shift()?.[1] || '') + (initials.pop()?.[1] || '')
+            ).toUpperCase();
+
+            return initials
+        }
+    },
     created() {},
     methods: {
         logout(){
@@ -58,7 +64,9 @@ export default {
         },
         openSettings(){
             this.$store.commit('toggleOnSettings');
-        }
+        },
+
+
     }
 }
 </script>

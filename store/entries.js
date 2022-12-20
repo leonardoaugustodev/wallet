@@ -180,8 +180,9 @@ export const mutations = {
 }
 
 export const actions = {
-    async index({ commit }) {
-        const ref = this.$fire.firestore.collection('entries')
+    async index({ commit, rootGetters }) {
+        const userUID = await rootGetters['users/getUserUID']
+        const ref = this.$fire.firestore.collection('entries').where("_userUID", "==", userUID )
         try {
             const snapshot = await ref.get()
             const entries = []

@@ -5,30 +5,47 @@
             <v-card class="pa-4">
                 <v-card-title>Wallet</v-card-title>
                 <v-data-table
-:headers="headers" :items="entries" sort-by="tickerCode" :items-per-page="-1" dense
-                    group-by="ticker.group" :loading="loadingWallet">
-                    <!-- <template #top>
-                    <v-toolbar>
-                        <v-toolbar-title>Wallet</v-toolbar-title>
-                        <v-spacer></v-spacer>
-                        <div class="ma-2" outlined>
-                            <div class="text-caption">Current: </div>
-                            {{ $utils.formatCurrency(totalCurrent) }}
-                        </div>
-                        <div class="ma-2" outlined>
-                            <div class="text-caption">Paid: </div>
-                            {{ $utils.formatCurrency(totalPaid) }}
-                        </div>
-                        <div class="ma-2" outlined>
-                            <div class="text-caption">Profit: </div>
-                            {{ $utils.formatCurrency(profit) }}
-                        </div>
-
-                    </v-toolbar>
-                </template> -->
+                    :headers="headers"
+                    :items="entries"
+                    sort-by="tickerCode"
+                    :items-per-page="-1"
+                    dense
+                    group-by="ticker.group"
+                    :loading="loadingWallet"
+                >
+                    <template v-slot:group.header="{ items, isOpen, toggle }">
+                        <th colspan="4">
+                            <v-icon @click="toggle">{{ isOpen ? 'mdi-minus' : 'mdi-plus' }} </v-icon>
+                            {{ items[0].ticker.group }}
+                        </th>
+                        <th class="text-right">
+                            {{ $utils.formatCurrency(calculateTotal(items, 'paidTotal')) }}
+                        </th>
+                        <th class="text-right">
+                            {{ $utils.formatCurrency(calculateTotal(items, 'currentTotal')) }}
+                        </th>
+                        <th class="text-right" :class="$utils.getTextColor(calculateTotal(items, 'profit'))">
+                            {{ $utils.formatCurrency(calculateTotal(items, 'profit')) }}
+                        </th>
+                        <th></th>
+                        <th class="text-right">
+                            {{ $utils.formatCurrency(calculateTotal(items, 'incomes')) }}
+                        </th>
+                        <th class="text-right" :class="$utils.getTextColor(calculateTotal(items, 'profitPlusIncome'))">
+                            {{ $utils.formatCurrency(calculateTotal(items, 'profitPlusIncome')) }}
+                        </th>
+                        <th></th>
+                        <th class="text-right">
+                            {{ $utils.formatPercentage(calculateTotal(items, 'position')) }}
+                        </th>
+                    </template>
 
                     <template #item.ticker.code="{ item }">
                         <TickerDetails :ticker="item"></TickerDetails>
+                    </template>
+
+                    <template #item.quantity="{ item }">
+                        {{ item.ticker.group === 'Crypto' ? item.quantity?.toFixed(4) : item.quantity?.toFixed(2) }}
                     </template>
 
                     <template #item.currentPrice="{ item }">
@@ -39,7 +56,7 @@
                     <template #item.currentTotal="{ item }">
                         {{ $utils.formatCurrency(item.currentTotal) }}
                     </template>
-                    <template #item.paidValue="{ item }">
+                    <template #item.paidValue="{ item }" class="">
                         {{ $utils.formatCurrency(item.paidValue) }}
                     </template>
                     <template #item.paidTotal="{ item }">
@@ -49,22 +66,40 @@
                         {{ $utils.formatCurrency(item.incomes) }}
                     </template>
                     <template #item.profit="{ item }">
-                        <v-chip :color="$utils.getColor(item.profit)" dark label small class="font-weight-black">
+                        <span class="mr-1" :class="$utils.getTextColor(item.profit)">
                             {{ $utils.formatCurrency(item.profit) }}
-                        </v-chip>
+                        </span>
+                        <v-icon v-if="item.profit > 0" small color="success"> mdi-trending-up </v-icon>
+                        <v-icon v-else small color="error"> mdi-trending-down </v-icon>
                     </template>
                     <template #item.profitPercentage="{ item }">
-                        <v-chip :color="$utils.getColor(item.profitPercentage)" dark label small class="font-weight-black">
-                            {{ $utils.formatPercentage(item.profitPercentage) }}
-                        </v-chip>
+                        <div class="d-flex">
+                            <v-chip
+                                :color="$utils.getColor(item.profitPercentage)"
+                                dark
+                                label
+                                small
+                                class="font-weight-black"
+                            >
+                                {{ $utils.formatPercentage(item.profitPercentage) }}
+                            </v-chip>
+                        </div>
                     </template>
                     <template #item.profitPlusIncome="{ item }">
-                        <v-chip :color="$utils.getColor(item.profitPlusIncome)" dark label small class="font-weight-black">
+                        <span class="mr-1" :class="$utils.getTextColor(item.profitPlusIncome)">
                             {{ $utils.formatCurrency(item.profitPlusIncome) }}
-                        </v-chip>
+                        </span>
+                        <v-icon v-if="item.profitPlusIncome > 0" small color="success"> mdi-trending-up </v-icon>
+                        <v-icon v-else small color="error"> mdi-trending-down </v-icon>
                     </template>
                     <template #item.profitPlusIncomePercentage="{ item }">
-                        <v-chip :color="$utils.getColor(item.profitPlusIncomePercentage)" dark label small class="font-weight-black">
+                        <v-chip
+                            :color="$utils.getColor(item.profitPlusIncomePercentage)"
+                            dark
+                            label
+                            small
+                            class="font-weight-black"
+                        >
                             {{ $utils.formatPercentage(item.profitPlusIncomePercentage) }}
                         </v-chip>
                     </template>
@@ -97,11 +132,7 @@ export default {
             menu2: false,
             editedItem: {
                 tickerCode: '',
-                date: new Date(
-                    Date.now() - new Date().getTimezoneOffset() * 60000
-                )
-                    .toISOString()
-                    .substr(0, 10),
+                date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().substr(0, 10),
                 group: '',
                 description: '',
                 unitPrice: 0,
@@ -111,11 +142,7 @@ export default {
             },
             defaultItem: {
                 tickerCode: '',
-                date: new Date(
-                    Date.now() - new Date().getTimezoneOffset() * 60000
-                )
-                    .toISOString()
-                    .substr(0, 10),
+                date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().substr(0, 10),
                 group: '',
                 description: '',
                 unitPrice: 0,
@@ -129,30 +156,42 @@ export default {
                     align: 'start',
                     value: 'ticker.code',
                 },
-                {
-                    text: 'Name',
-                    align: 'start',
-                    value: 'ticker.name',
-                },
+                // {
+                //     text: 'Name',
+                //     align: 'start',
+                //     value: 'ticker.name',
+                // },
                 {
                     text: 'Group',
                     align: 'start',
                     value: 'ticker.group',
                 },
-                { text: 'Quantity', value: 'quantity' },
-                { text: 'Payed Value', value: 'paidValue' },
-                { text: 'Payed Total', value: 'paidTotal' },
-                { text: 'Current Price', value: 'currentPrice' },
-                { text: 'Current Total', value: 'currentTotal' },
-                { text: 'Profit', value: 'profit' },
-                { text: 'Profit %', value: 'profitPercentage' },
-                { text: 'Incomes', value: 'incomes' },
-                { text: 'Profit + Inc.', value: 'profitPlusIncome' },
+                { text: 'Avg. Price', value: 'paidValue', align: 'right' },
+                {
+                    text: 'Current Price',
+                    value: 'currentPrice',
+                    align: 'right',
+                },
+                { text: 'Quantity', value: 'quantity', align: 'right' },
+                { text: 'Invested Total', value: 'paidTotal', align: 'right' },
+                {
+                    text: 'Current Total',
+                    value: 'currentTotal',
+                    align: 'right',
+                },
+                { text: 'Profit', value: 'profit', align: 'right' },
+                { text: 'Difference', value: 'profitPercentage' },
+                { text: 'Incomes', value: 'incomes', align: 'right' },
+                {
+                    text: 'Profit + Inc.',
+                    value: 'profitPlusIncome',
+                    align: 'right',
+                },
                 {
                     text: 'Profit + Inc. %',
                     value: 'profitPlusIncomePercentage',
                 },
-                { text: 'Position', value: 'position' },
+                { text: 'Position', value: 'position', align: 'right' },
             ],
             value: 0,
             interval: 0,
@@ -170,14 +209,10 @@ export default {
             return this.editedIndex === -1 ? 'New Entry' : 'Edit Entry'
         },
         totalPaid() {
-            return this.$store.getters['wallet/getTotalByFieldName'](
-                'paidTotal'
-            )
+            return this.$store.getters['wallet/getTotalByFieldName']('paidTotal')
         },
         totalCurrent() {
-            return this.$store.getters['wallet/getTotalByFieldName'](
-                'currentTotal'
-            )
+            return this.$store.getters['wallet/getTotalByFieldName']('currentTotal')
         },
         profit() {
             return this.totalCurrent - this.totalPaid
@@ -259,8 +294,7 @@ export default {
         },
 
         updateEntryTotal() {
-            this.editedItem.total =
-                this.editedItem.quantity * this.editedItem.unitPrice
+            this.editedItem.total = this.editedItem.quantity * this.editedItem.unitPrice
         },
 
         startBuffer() {
@@ -273,6 +307,10 @@ export default {
 
         openTickerDetails(item) {
             this.showTickerDetailsModal = true
+        },
+
+        calculateTotal(items, field) {
+            return items.reduce((acc, cv) => acc + cv[field], 0)
         },
     },
 }

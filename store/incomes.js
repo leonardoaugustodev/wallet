@@ -9,6 +9,20 @@ export const getters = {
             return acc + parseFloat(cv.amount)
         }, 0)
     },
+    summarizeByTicker: (state) => {
+        return state.incomes.reduce((acc, income) => {
+            let reduced = acc[income.ticker.code]
+
+            if (!reduced) {
+                reduced = 0
+            }
+
+            reduced += Number(income?.amount || 0)
+            acc[income.ticker.code] = reduced
+
+            return acc
+        }, {})
+    },
     summarizeAmountByMonth: (state) => {
         function subtractMonths(date, months) {
             date.setMonth(date.getMonth() - months)
@@ -66,8 +80,9 @@ export const mutations = {
 }
 
 export const actions = {
-    async index({ commit }) {
-        const ref = this.$fire.firestore.collection('incomes')
+    async index({ commit, rootGetters }) {
+        const userUID = await rootGetters['users/getUserUID']
+        const ref = this.$fire.firestore.collection('incomes').where("_userUID", "==", userUID )
         try {
             const snapshot = await ref.get()
             const incomes = []

@@ -45,6 +45,7 @@ export const actions = {
             await dispatch('ticker/sync', null, {root: true});
 
             const summary = rootGetters['entries/summarizeByTicker'];
+            const profitSummary = await rootGetters['incomes/summarizeByTicker'];
 
             // MERGE WITH SERVER DATA
             for (const tickerCode in summary) {
@@ -53,11 +54,11 @@ export const actions = {
 
                 const existingTicker = rootGetters['ticker/getTickerByCode'](tickerCode)
 
-                entry.currentTotal = existingTicker.currentPrice * entry?.quantity;
-                entry.currentPrice = existingTicker.currentPrice;
+                entry.currentTotal = existingTicker.currentPrice * entry?.quantity
+                entry.currentPrice = existingTicker.currentPrice
 
-                const profit = (entry?.currentTotal || 0) - (entry?.total || 0);
-                const incomes = rootGetters['incomes/getAmountByTicker'](tickerCode);
+                const profit = (entry?.currentTotal || 0) - (entry?.total || 0)
+                const incomes = profitSummary[tickerCode] || 0
 
                 wallet.push(
                     {

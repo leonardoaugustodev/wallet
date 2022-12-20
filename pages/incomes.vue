@@ -96,7 +96,17 @@ v-model="editedItem.quantity" label="Quantity" outlined
                         </v-card>
                     </v-dialog>
                 </v-card-title>
-                <v-data-table :headers="headers" :items="incomes" sort-by="date">
+                <v-data-table
+                    :headers="headers"
+                    :items="incomes"
+                    sort-by="date"
+                >
+                    <template #item.ticker.code="{ item }">
+                        <span class="font-weight-bold">
+                            {{ item.ticker.code }}
+                        </span>
+                    </template>
+
                     <template #item.amount="{ item }">
                         {{ parseFloat(item.amount)?.toFixed(2) }}
                     </template>
