@@ -3,7 +3,7 @@
         <v-col cols="12">
             <!-- <v-progress-linear v-model="value" color="deep-purple"></v-progress-linear> -->
             <v-card class="pa-4">
-                <v-card-title>Wallet</v-card-title>
+                <v-card-title>{{ $t('wallet') }}</v-card-title>
                 <v-data-table
                     :headers="headers"
                     :items="entries"

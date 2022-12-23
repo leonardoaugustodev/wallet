@@ -16,7 +16,7 @@ export default {
         chartData() {
             return [
                 {
-                    name: 'Incomes',
+                    name: this.$t('incomes'),
                     data:
                         this.summary != null
                             ? this.summary.map((x) =>

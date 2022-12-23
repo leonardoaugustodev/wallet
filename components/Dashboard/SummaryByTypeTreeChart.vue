@@ -22,7 +22,7 @@ export default {
                     {
                         data: Object.keys(this.summary).map((x) => {
                             return {
-                                x,
+                                x: this.$t(x),
                                 y: Number(this.summary[x].total.toFixed(2)),
                             }
                         }),

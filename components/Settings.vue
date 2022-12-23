@@ -29,24 +29,43 @@
                         <v-card flat>
                             <v-card-text>
                                 <v-card flat>
-                                    <v-card-title>
-                                        Investment Types
-                                    </v-card-title>
+                                    <v-card-title> Language </v-card-title>
+                                    <v-card-text>
+                                        <div class="lang-dropdown">
+                                            <v-combobox
+                                                :items="availableLocales"
+                                                item-text="name"
+                                                item-value="code"
+                                                @input="changeLocale"
+                                            >
+                                            </v-combobox>
+                                        </div>
+                                    </v-card-text>
+                                </v-card>
+                            </v-card-text>
+                        </v-card>
+                        <v-card flat>
+                            <v-card-text>
+                                <v-card flat>
+                                    <v-card-title> Investment Types </v-card-title>
                                     <v-card-text>
                                         <v-combobox
-v-model="model" :items="items" :search-input.sync="search"
-                                            hide-selected multiple persistent-hint small-chips deletable-chips
-                                            @input="handleInvestmentTypeInput">
+                                            v-model="model"
+                                            :items="items"
+                                            :search-input.sync="search"
+                                            hide-selected
+                                            multiple
+                                            persistent-hint
+                                            small-chips
+                                            deletable-chips
+                                            @input="handleInvestmentTypeInput"
+                                        >
                                             <template #no-data>
                                                 <v-list-item>
                                                     <v-list-item-content>
                                                         <v-list-item-title>
-                                                            No results matching
-                                                            "<strong>{{
-                                                                    search
-                                                            }}</strong>". Press
-                                                            <kbd>enter</kbd> to
-                                                            create a new one
+                                                            No results matching "<strong>{{ search }}</strong
+                                                            >". Press <kbd>enter</kbd> to create a new one
                                                         </v-list-item-title>
                                                     </v-list-item-content>
                                                 </v-list-item>
@@ -60,12 +79,8 @@ v-model="model" :items="items" :search-input.sync="search"
                     <v-tab-item>
                         <v-card flat>
                             <v-card-text>
-                                <v-btn outlined block color="primary" @click="loadEntryData">
-                                    Load Entries Data
-                                </v-btn>
-                                <v-btn outlined block color="primary" @click="loadIncomeData">
-                                    Load Income Data
-                                </v-btn>
+                                <v-btn outlined block color="primary" @click="loadEntryData"> Load Entries Data </v-btn>
+                                <v-btn outlined block color="primary" @click="loadIncomeData"> Load Income Data </v-btn>
                             </v-card-text>
                         </v-card>
                     </v-tab-item>
@@ -73,9 +88,7 @@ v-model="model" :items="items" :search-input.sync="search"
             </v-card-text>
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="grey darken-1" text @click="dialog = false">
-                    Close
-                </v-btn>
+                <v-btn color="grey darken-1" text @click="dialog = false"> Close </v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -102,29 +115,29 @@ export default {
     },
     computed: {
         items() {
-            return this.$store.getters.getInvestmentTypeNames;
-        }
+            return this.$store.getters.getInvestmentTypeNames
+        },
+        availableLocales() {
+            return this.$i18n.locales.filter((i) => i.code !== this.$i18n.locale)
+        },
     },
-    watch: {
-
-    },
-    created() {
-    },
+    watch: {},
+    created() {},
     methods: {
         loadEntryData() {
-            data.forEach((d) => this.$store.dispatch(
-                'entries/create', d
-            ));
+            data.forEach((d) => this.$store.dispatch('entries/create', d))
         },
         loadIncomeData() {
-            incomeData.forEach((d) => this.$store.dispatch(
-                'incomes/create', d
-            ));
-        },  
+            incomeData.forEach((d) => this.$store.dispatch('incomes/create', d))
+        },
         handleInvestmentTypeInput(typeName) {
-            typeName.forEach(name => {
-                this.$store.commit('addInvestmentType', name);
+            typeName.forEach((name) => {
+                this.$store.commit('addInvestmentType', name)
             })
+        },
+        changeLocale(locale){
+            console.log(locale)
+            this.$i18n.setLocale(locale.code)
         }
     },
 }

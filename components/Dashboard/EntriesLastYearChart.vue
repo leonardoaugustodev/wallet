@@ -28,7 +28,7 @@ export default {
         chartData() {
             return [
                 {
-                    name: 'Entries',
+                    name: this.$t('entries'),
                     type: 'bar',
                     data:
                         this.summary != null
@@ -38,7 +38,7 @@ export default {
                             : [],
                 },
                 {
-                    name: 'Aggregated',
+                    name: this.$t('aggregated'),
                     type: 'line',
                     data:
                         this.aggregateByMonth != null
