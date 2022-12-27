@@ -16,7 +16,7 @@
         </v-app-bar>
 
         <v-main>
-            <v-container>
+            <v-container fluid>
                 <Nuxt />
             </v-container>
         </v-main>
@@ -66,6 +66,9 @@ export default {
             title: 'Wallet',
         }
     },
+
+    async fetch() {
+    },
     computed: {
         showSettings() {
             return this.$store.state.showSettings;
@@ -76,13 +79,6 @@ export default {
     },
     created() {
         if(!this.userIsAuthenticated) this.$router.push('/login')
-    },
-
-    async fetch() {
-        // await this.$store.dispatch('ticker/index')
-        // await this.$store.dispatch('incomes/index')
-        // await this.$store.dispatch('entries/index')
-        // await this.$store.dispatch('wallet/index')
     },
 
     methods: {

@@ -3,17 +3,27 @@
         <v-col cols="12">
             <!-- <v-progress-linear v-model="value" color="deep-purple"></v-progress-linear> -->
             <v-card class="pa-4">
-                <v-card-title>{{ $t('wallet') }}</v-card-title>
+                <v-card-title>
+                    {{ $t('wallet') }}
+                    <v-spacer></v-spacer>
+
+                    <!-- DATE -->
+                    <v-menu
+v-model="menu2" :close-on-content-click="false" :nudge-right="40"
+                        transition="scale-transition" offset-y min-width="auto">
+                        <template #activator="{ on, attrs }">
+                            <v-text-field
+v-model="replayDate" type="date" label="Date" readonly v-bind="attrs" outlined
+                                dense v-on="on"></v-text-field>
+                        </template>
+                        <v-date-picker v-model="replayDate" @input="menu2 = false"></v-date-picker>
+                    </v-menu>
+
+                </v-card-title>
                 <v-data-table
-                    :headers="headers"
-                    :items="entries"
-                    sort-by="tickerCode"
-                    :items-per-page="-1"
-                    dense
-                    group-by="ticker.group"
-                    :loading="loadingWallet"
-                >
-                    <template v-slot:group.header="{ items, isOpen, toggle }">
+:headers="headers" :items="entries" sort-by="tickerCode" :items-per-page="-1" dense
+                    group-by="ticker.group" :loading="loadingWallet">
+                    <template #group.header="{ items, isOpen, toggle }">
                         <th colspan="4">
                             <v-icon @click="toggle">{{ isOpen ? 'mdi-minus' : 'mdi-plus' }} </v-icon>
                             {{ items[0].ticker.group }}
@@ -69,18 +79,12 @@
                         <span class="mr-1" :class="$utils.getTextColor(item.profit)">
                             {{ $utils.formatCurrency(item.profit) }}
                         </span>
-                        <v-icon v-if="item.profit > 0" small color="success"> mdi-trending-up </v-icon>
-                        <v-icon v-else small color="error"> mdi-trending-down </v-icon>
                     </template>
                     <template #item.profitPercentage="{ item }">
                         <div class="d-flex">
                             <v-chip
-                                :color="$utils.getColor(item.profitPercentage)"
-                                dark
-                                label
-                                small
-                                class="font-weight-black"
-                            >
+:color="$utils.getColor(item.profitPercentage)" dark label small
+                                class="font-weight-black">
                                 {{ $utils.formatPercentage(item.profitPercentage) }}
                             </v-chip>
                         </div>
@@ -89,17 +93,11 @@
                         <span class="mr-1" :class="$utils.getTextColor(item.profitPlusIncome)">
                             {{ $utils.formatCurrency(item.profitPlusIncome) }}
                         </span>
-                        <v-icon v-if="item.profitPlusIncome > 0" small color="success"> mdi-trending-up </v-icon>
-                        <v-icon v-else small color="error"> mdi-trending-down </v-icon>
                     </template>
                     <template #item.profitPlusIncomePercentage="{ item }">
                         <v-chip
-                            :color="$utils.getColor(item.profitPlusIncomePercentage)"
-                            dark
-                            label
-                            small
-                            class="font-weight-black"
-                        >
+:color="$utils.getColor(item.profitPlusIncomePercentage)" dark label small
+                            class="font-weight-black">
                             {{ $utils.formatPercentage(item.profitPlusIncomePercentage) }}
                         </v-chip>
                     </template>
@@ -130,6 +128,7 @@ export default {
             menu: false,
             modal: false,
             menu2: false,
+            replayDate: null,
             editedItem: {
                 tickerCode: '',
                 date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().substr(0, 10),
@@ -231,19 +230,17 @@ export default {
         value(val) {
             if (val < 100) return
 
-            // this.$store.dispatch('wallet/index');
-
             this.value = 0
             this.startBuffer()
         },
+        replayDate(nv) {
+            console.log(nv)
+            this.$store.dispatch('wallet/index', { byPassLastRefresh: true, calculateOnDate: nv });
+
+        }
     },
 
     created() {
-        // this.$store.subscribe((mutation) => {
-        //     if (mutation.type === 'ticker/update') {
-        //         // this.$store.dispatch('wallet/index')
-        //     }
-        // })
     },
 
     beforeDestroy() {

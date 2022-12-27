@@ -12,13 +12,11 @@ exports.getQuotes = functions.region('southamerica-east1').https.onCall(async (d
 
     try {
         const symbols = data.symbols
-        const convertedSymbols = convertSymbols(symbols)
-        console.log(convertedSymbols)
         const response = await axios.get(
             `https://query1.finance.yahoo.com/v7/finance/quote`,
             {
                 params: {
-                    "symbols": convertSymbols(symbols),
+                    symbols: symbols.join(','),
                 },
                 headers: {
                     "Content-type": "application/json;charset=utf-8",

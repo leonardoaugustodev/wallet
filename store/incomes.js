@@ -95,7 +95,7 @@ export const actions = {
     async create({ commit, dispatch, rootGetters, rootState }, income) {
         try {
 
-            await dispatch('wallet/index', null, {root: true});
+            await dispatch('wallet/index', {}, {root: true});
 
             const ref = this.$fire.firestore.collection('incomes').doc()
             income._id = ref.id

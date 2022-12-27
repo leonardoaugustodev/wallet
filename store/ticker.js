@@ -92,23 +92,31 @@ export const actions = {
             }
         })
 
+        const BRL_USD = 'BRL=X';
+
         const bovespaTickers = tickers
             .filter((t) => t.source === 'bovespa' && t.externalSync)
-            ?.map((x) => x.code)
+            ?.map((x) => `${x.code}.SA`)
         if(!bovespaTickers || !bovespaTickers.length) return;
 
+        const cryptoTickers = tickers.filter((t) => t.source === 'crypto' && t.externalSync)?.map((x) => `${x.code}-USD`)
+
         const getQuotes = this.$fire.functions.httpsCallable('getQuotes')
-        const tickersData = await getQuotes({symbols: bovespaTickers})
+        const tickersData = await getQuotes({symbols: [BRL_USD, ...bovespaTickers, ...cryptoTickers]})
         if (!tickersData || !tickersData.data?.length) return
+
+        const BRLUSD = tickersData.data.find(t => t.symbol === 'BRL=X');
 
         for (const tickerData of tickersData.data) {
             const stateTicker = tickers.find(
-                (t) => t.code === tickerData.symbol
+                (t) => t.code === tickerData.symbol.replace('.SA', '').replace('-USD', '')
             )
+
+            const currentPrice = (tickerData?.regularMarketPrice * (tickerData.quoteType === 'CRYPTOCURRENCY' ? BRLUSD?.regularMarketPrice : 1)) || 1
 
             commit('update', {
                 ...stateTicker,
-                currentPrice: tickerData.regularMarketPrice || 1,
+                currentPrice,
                 name: tickerData.longName,
                 logoUrl: tickerData.logourl,
             })

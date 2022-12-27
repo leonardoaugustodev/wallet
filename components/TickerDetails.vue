@@ -141,7 +141,7 @@ export default {
                 ...ticker,
                 ...this.record,
             })
-            await this.$store.dispatch('wallet/index', true)
+            await this.$store.dispatch('wallet/index', {byPassLastRefresh: true})
             this.menu = false
             this.record.currentPrice = this.ticker.currentPrice
         },
