@@ -54,8 +54,8 @@ export const actions = {
 
                 const existingTicker = rootGetters['ticker/getTickerByCode'](tickerCode)
 
-                entry.currentTotal = existingTicker.currentPrice * entry?.quantity
-                entry.currentPrice = existingTicker.currentPrice
+                entry.currentTotal = (existingTicker?.currentPrice || 0) * entry?.quantity
+                entry.currentPrice = (existingTicker?.currentPrice || 0)
 
                 const profit = (entry?.currentTotal || 0) - (entry?.total || 0)
                 const incomes = profitSummary[tickerCode] || 0

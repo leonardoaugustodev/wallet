@@ -97,12 +97,11 @@ export const actions = {
             ?.map((x) => x.code)
         if(!bovespaTickers || !bovespaTickers.length) return;
 
-        const tickersData = await this.$brapi?.getQuotes(
-            bovespaTickers?.join('%2C')
-        )
-        if (!tickersData || !tickersData.results.length) return
+        const getQuotes = this.$fire.functions.httpsCallable('getQuotes')
+        const tickersData = await getQuotes({symbols: bovespaTickers})
+        if (!tickersData || !tickersData.data?.length) return
 
-        for (const tickerData of tickersData.results) {
+        for (const tickerData of tickersData.data) {
             const stateTicker = tickers.find(
                 (t) => t.code === tickerData.symbol
             )

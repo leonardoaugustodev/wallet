@@ -33,6 +33,7 @@ export default {
         '~/plugins/utils.js',
         '~/plugins/brapi.js',
         '~/plugins/calculator.js',
+        '~/plugins/yahoo.js',
         { src: '~/plugins/apexchart.js', ssr: false },
     ],
 
@@ -98,6 +99,11 @@ export default {
                 emulatorHost: 'localhost',
             },
             hosting: true,
+            functions: {
+                location: 'southamerica-east1',
+                emulatorPort: process.env.NODE_ENV === 'development' ? 5001 : undefined,
+                emulatorHost: 'http://127.0.0.1',
+              }
         },
     },
 
