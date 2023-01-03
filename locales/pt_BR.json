@@ -52,5 +52,13 @@
     "type": "Tipo",
     "unitPrice": "Preço unitário",
     "wallet": "Carteira",
-    "yield": "Yield"
+    "yield": "Yield",
+    "profitPlusIncome": "Lucro + Prov.",
+    "profitPlusIncomePercentage": "Lucro + Prov. %",
+    "noDataToShow": "Nenhum dado para mostrar.",
+    "required": "Obrigatório",
+    "fillAllFields": "Por favor, preencha todos os campos obrigatórios!",
+    "recordUpdatedSucessfully": "O registro foi atualizado com sucesso!",
+    "newRecordCreatedSucessfully": "O novo registro foi criado com sucesso!",
+    "deleteConfirmation": "Tem certeza que deseja deletar esse item?"
 }

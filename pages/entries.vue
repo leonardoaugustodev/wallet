@@ -3,7 +3,7 @@
         <v-col cols="12">
             <v-card class="pa-4">
                 <v-card-title>
-                    Entries
+                    {{ $t('entries') }}
                     <v-spacer></v-spacer>
                     <NewEntry :edited-item="editedItem"></NewEntry>
                 </v-card-title>
@@ -40,7 +40,7 @@
                         </v-icon>
                     </template>
 
-                    <template #no-data> No data to show. </template>
+                    <template #no-data> {{$t('noDataToShow')}} </template>
                 </v-data-table>
             </v-card>
         </v-col>
@@ -95,18 +95,17 @@ export default {
             },
             headers: [
                 {
-                    text: 'Ticker',
+                    text: this.$t('ticker'),
                     align: 'start',
                     value: 'ticker.code',
                 },
-                { text: 'Date', value: 'date' },
-                { text: 'Group', value: 'ticker.group' },
-                { text: 'Description', value: 'description' },
-                { text: 'Unit Price', value: 'unitPrice' },
-                { text: 'Quantity', value: 'quantity' },
-                // { text: 'Tax', value: 'tax' },
-                { text: 'Total', value: 'total' },
-                { text: 'Actions', value: 'actions' },
+                { text: this.$t('date'), value: 'date' },
+                { text: this.$t('group'), value: 'ticker.group' },
+                { text: this.$t('description'), value: 'description' },
+                { text: this.$t('unitPrice'), value: 'unitPrice' },
+                { text: this.$t('quantity'), value: 'quantity' },
+                { text: this.$t('total'), value: 'total' },
+                { text: this.$t('actions'), value: 'actions' },
             ],
         }
     },

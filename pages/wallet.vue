@@ -7,22 +7,39 @@
                     {{ $t('wallet') }}
                     <v-spacer></v-spacer>
 
-                    <!-- DATE -->
-                    <v-menu
-v-model="menu2" :close-on-content-click="false" :nudge-right="40"
-                        transition="scale-transition" offset-y min-width="auto">
-                        <template #activator="{ on, attrs }">
-                            <v-text-field
-v-model="replayDate" type="date" label="Date" readonly v-bind="attrs" outlined
-                                dense v-on="on"></v-text-field>
-                        </template>
-                        <v-date-picker v-model="replayDate" @input="menu2 = false"></v-date-picker>
-                    </v-menu>
-
+                    <!-- <div width="300">
+                        <v-menu
+                            v-model="menu2"
+                            :close-on-content-click="false"
+                            :nudge-right="40"
+                            transition="scale-transition"
+                            offset-y
+                        >
+                            <template #activator="{ on, attrs }">
+                                <v-text-field
+                                    v-model="replayDate"
+                                    type="date"
+                                    label="Replay date"
+                                    readonly
+                                    v-bind="attrs"
+                                    outlined
+                                    dense
+                                    v-on="on"
+                                ></v-text-field>
+                            </template>
+                            <v-date-picker v-model="replayDate" @input="menu2 = false"></v-date-picker>
+                        </v-menu>
+                    </div> -->
                 </v-card-title>
                 <v-data-table
-:headers="headers" :items="entries" sort-by="tickerCode" :items-per-page="-1" dense
-                    group-by="ticker.group" :loading="loadingWallet">
+                    :headers="headers"
+                    :items="entries"
+                    sort-by="tickerCode"
+                    :items-per-page="-1"
+                    dense
+                    group-by="ticker.group"
+                    :loading="loadingWallet"
+                >
                     <template #group.header="{ items, isOpen, toggle }">
                         <th colspan="4">
                             <v-icon @click="toggle">{{ isOpen ? 'mdi-minus' : 'mdi-plus' }} </v-icon>
@@ -83,8 +100,12 @@ v-model="replayDate" type="date" label="Date" readonly v-bind="attrs" outlined
                     <template #item.profitPercentage="{ item }">
                         <div class="d-flex">
                             <v-chip
-:color="$utils.getColor(item.profitPercentage)" dark label small
-                                class="font-weight-black">
+                                :color="$utils.getColor(item.profitPercentage)"
+                                dark
+                                label
+                                small
+                                class="font-weight-black"
+                            >
                                 {{ $utils.formatPercentage(item.profitPercentage) }}
                             </v-chip>
                         </div>
@@ -96,8 +117,12 @@ v-model="replayDate" type="date" label="Date" readonly v-bind="attrs" outlined
                     </template>
                     <template #item.profitPlusIncomePercentage="{ item }">
                         <v-chip
-:color="$utils.getColor(item.profitPlusIncomePercentage)" dark label small
-                            class="font-weight-black">
+                            :color="$utils.getColor(item.profitPlusIncomePercentage)"
+                            dark
+                            label
+                            small
+                            class="font-weight-black"
+                        >
                             {{ $utils.formatPercentage(item.profitPlusIncomePercentage) }}
                         </v-chip>
                     </template>
@@ -128,7 +153,7 @@ export default {
             menu: false,
             modal: false,
             menu2: false,
-            replayDate: null,
+            replayDate: new Date(Date.now()).toISOString().substr(0, 10),
             editedItem: {
                 tickerCode: '',
                 date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().substr(0, 10),
@@ -151,7 +176,7 @@ export default {
             },
             headers: [
                 {
-                    text: 'Ticker',
+                    text: this.$t('ticker'),
                     align: 'start',
                     value: 'ticker.code',
                 },
@@ -161,36 +186,36 @@ export default {
                 //     value: 'ticker.name',
                 // },
                 {
-                    text: 'Group',
+                    text: this.$t('group'),
                     align: 'start',
                     value: 'ticker.group',
                 },
-                { text: 'Avg. Price', value: 'paidValue', align: 'right' },
+                { text: this.$t('averagePrice'), value: 'paidValue', align: 'right' },
                 {
-                    text: 'Current Price',
+                    text: this.$t('currentPrice'),
                     value: 'currentPrice',
                     align: 'right',
                 },
-                { text: 'Quantity', value: 'quantity', align: 'right' },
-                { text: 'Invested Total', value: 'paidTotal', align: 'right' },
+                { text: this.$t('quantity'), value: 'quantity', align: 'right' },
+                { text: this.$t('totalInvested'), value: 'paidTotal', align: 'right' },
                 {
-                    text: 'Current Total',
+                    text: this.$t('totalCurrent'),
                     value: 'currentTotal',
                     align: 'right',
                 },
-                { text: 'Profit', value: 'profit', align: 'right' },
-                { text: 'Difference', value: 'profitPercentage' },
-                { text: 'Incomes', value: 'incomes', align: 'right' },
+                { text: this.$t('profit'), value: 'profit', align: 'right' },
+                { text: this.$t('difference'), value: 'profitPercentage' },
+                { text: this.$t('incomes'), value: 'incomes', align: 'right' },
                 {
-                    text: 'Profit + Inc.',
+                    text: this.$t('profitPlusIncome'),
                     value: 'profitPlusIncome',
                     align: 'right',
                 },
                 {
-                    text: 'Profit + Inc. %',
+                    text: this.$t('profitPlusIncomePercentage'),
                     value: 'profitPlusIncomePercentage',
                 },
-                { text: 'Position', value: 'position', align: 'right' },
+                { text: this.$t('position'), value: 'position', align: 'right' },
             ],
             value: 0,
             interval: 0,
@@ -235,13 +260,11 @@ export default {
         },
         replayDate(nv) {
             console.log(nv)
-            this.$store.dispatch('wallet/index', { byPassLastRefresh: true, calculateOnDate: nv });
-
-        }
+            this.$store.dispatch('wallet/index', { byPassLastRefresh: true, calculateOnDate: nv })
+        },
     },
 
-    created() {
-    },
+    created() {},
 
     beforeDestroy() {
         clearInterval(this.interval)

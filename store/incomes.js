@@ -9,8 +9,11 @@ export const getters = {
             return acc + parseFloat(cv.amount)
         }, 0)
     },
-    summarizeByTicker: (state) => {
-        return state.incomes.reduce((acc, income) => {
+    summarizeByTicker: (state) => (filterOnDate = new Date()) => {
+
+        const incomes = state.incomes.filter(x => new Date(x.date) <= new Date(filterOnDate)) || []
+
+        return incomes.reduce((acc, income) => {
             let reduced = acc[income.ticker.code]
 
             if (!reduced) {

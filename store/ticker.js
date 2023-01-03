@@ -29,7 +29,7 @@ export const mutations = {
 export const actions = {
     async index({ commit, rootGetters }) {
         const userUID = await rootGetters['users/getUserUID']
-        const ref = this.$fire.firestore.collection('tickers').where("_userUID", "==", userUID )
+        const ref = this.$fire.firestore.collection('tickers')
         try {
             const snapshot = await ref.get()
             const tickers = []
@@ -47,14 +47,13 @@ export const actions = {
 
             if (existingTicker) return
 
-            const ref = this.$fire.firestore.collection('tickers').doc()
+            const ref = this.$fire.firestore.collection('tickers').doc(ticker.code)
             ticker._id = ref.id
-            ticker._userUID = rootGetters['users/getUserUID']
             ticker._createdAt =
                 this.$fireModule.firestore.FieldValue.serverTimestamp()
             ticker._updatedAt =
                 this.$fireModule.firestore.FieldValue.serverTimestamp()
-            ticker.currentPrice = 1
+            ticker.currentPrice = ticker.currentPrice || 1
             ticker.externalSync = true
             await ref.set(ticker)
             commit('create', ticker)
@@ -97,12 +96,12 @@ export const actions = {
         const bovespaTickers = tickers
             .filter((t) => t.source === 'bovespa' && t.externalSync)
             ?.map((x) => `${x.code}.SA`)
-        if(!bovespaTickers || !bovespaTickers.length) return;
+        if (!bovespaTickers || !bovespaTickers.length) return;
 
         const cryptoTickers = tickers.filter((t) => t.source === 'crypto' && t.externalSync)?.map((x) => `${x.code}-USD`)
 
         const getQuotes = this.$fire.functions.httpsCallable('getQuotes')
-        const tickersData = await getQuotes({symbols: [BRL_USD, ...bovespaTickers, ...cryptoTickers]})
+        const tickersData = await getQuotes({ symbols: [BRL_USD, ...bovespaTickers, ...cryptoTickers] })
         if (!tickersData || !tickersData.data?.length) return
 
         const BRLUSD = tickersData.data.find(t => t.symbol === 'BRL=X');
@@ -118,7 +117,6 @@ export const actions = {
                 ...stateTicker,
                 currentPrice,
                 name: tickerData.longName,
-                logoUrl: tickerData.logourl,
             })
         }
     },

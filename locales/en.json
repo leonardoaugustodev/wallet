@@ -52,5 +52,13 @@
     "type": "Type",
     "unitPrice": "Unit Price",
     "wallet": "Wallet",
-    "yield": "Yield"
+    "yield": "Yield",
+    "profitPlusIncome": "Profit + Earn.",
+    "profitPlusIncomePercentage": "Profit + Earn. %",
+    "noDataToShow": "NO data do show.",
+    "required": "Required.",
+    "fillAllFields": "Please, fill all the required fields!",
+    "recordUpdatedSucessfully": "The record was updated successfully!",
+    "newRecordCreatedSucessfully": "The new record was created sucessfully!",
+    "deleteConfirmation": "Are you sure about deleting this item?"
 }

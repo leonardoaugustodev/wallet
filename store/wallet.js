@@ -33,8 +33,6 @@ export const actions = {
         { byPassLastRefresh, calculateOnDate  }
     ) {
         try {
-            console.log(calculateOnDate)
-            console.log(byPassLastRefresh)
 
             if(!calculateOnDate) calculateOnDate = new Date()
 
@@ -44,7 +42,6 @@ export const actions = {
             const wallet = []
 
             const entries = rootState.entries.entries.filter((e) => new Date(e.date) <= new Date(calculateOnDate)) || []
-            console.log(entries.length)
             if (!entries || !entries.length) return
 
             const tickerCodes = rootGetters['entries/getTickerCodes']
@@ -52,8 +49,8 @@ export const actions = {
 
             await dispatch('ticker/sync', null, { root: true })
 
-            const summary = rootGetters['entries/summarizeByTicker']
-            const profitSummary = await rootGetters['incomes/summarizeByTicker']
+            const summary = rootGetters['entries/summarizeByTicker'](calculateOnDate)
+            const profitSummary = await rootGetters['incomes/summarizeByTicker'](calculateOnDate)
 
             // MERGE WITH SERVER DATA
             for (const tickerCode in summary) {

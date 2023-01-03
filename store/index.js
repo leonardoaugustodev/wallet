@@ -1,12 +1,12 @@
 export const state = () => ({
     showSettings: false,
     investmentTypes: [
-        { name: 'Stock', priceSource: 'bovespa' },
-        { name: 'Fixed Income', priceSource: null },
-        { name: 'REIT', priceSource: 'bovespa' },
-        { name: 'International', priceSource: 'bovespa' },
-        { name: 'Crypto', priceSource: 'crypto' },
-        { name: 'Emergency Fund', priceSource: null },
+        { name: 'Stock', priceSource: 'bovespa', isActive: true },
+        { name: 'Fixed Income', priceSource: null, isActive: true },
+        { name: 'REIT', priceSource: 'bovespa', isActive: true },
+        { name: 'International', priceSource: 'bovespa', isActive: true },
+        { name: 'Crypto', priceSource: 'crypto', isActive: true },
+        { name: 'Emergency Fund', priceSource: null, isActive: true },
     ],
 })
 

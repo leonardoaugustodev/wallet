@@ -1,83 +1,77 @@
 <template>
     <v-dialog v-model="dialog" persistent max-width="800">
         <template #activator="{ on, attrs }">
-            <v-btn block text v-bind="attrs" v-on="on"> Settings </v-btn>
+            <v-btn block text v-bind="attrs" v-on="on"> {{$t('settings')}} </v-btn>
         </template>
         <v-card>
-            <v-card-title class="text-h5"> Settings </v-card-title>
+            <v-card-title class="text-h5"> {{ $t('settings')}} </v-card-title>
             <v-card-text>
                 <v-tabs vertical>
-                    <!-- <v-tab>
+                    <v-tab>
                         <v-icon left> mdi-account </v-icon>
-                        Profile
-                    </v-tab> -->
+                        {{  $t('profile') }}
+                    </v-tab>
                     <v-tab>
                         <v-icon left> mdi-tools </v-icon>
-                        General
+                        {{  $t('general') }}
                     </v-tab>
                     <v-tab>
                         <v-icon left> mdi-test-tube </v-icon>
-                        Developer
+                        {{  $t('developer') }}
                     </v-tab>
 
-                    <!-- <v-tab-item>
-                        <v-card flat>
-                            <v-card-text> Profile </v-card-text>
-                        </v-card>
-                    </v-tab-item> -->
                     <v-tab-item>
-                        <v-card flat>
+                        <v-card flat class="ma-2">
                             <v-card-text>
-                                <v-card flat>
-                                    <v-card-title> Language </v-card-title>
-                                    <v-card-text>
-                                        <div class="lang-dropdown">
-                                            <v-combobox
-                                                :items="availableLocales"
-                                                item-text="name"
-                                                item-value="code"
-                                                @input="changeLocale"
-                                            >
-                                            </v-combobox>
-                                        </div>
-                                    </v-card-text>
-                                </v-card>
-                            </v-card-text>
-                        </v-card>
-                        <v-card flat>
-                            <v-card-text>
-                                <v-card flat>
-                                    <v-card-title> Investment Types </v-card-title>
-                                    <v-card-text>
-                                        <v-combobox
-                                            v-model="model"
-                                            :items="items"
-                                            :search-input.sync="search"
-                                            hide-selected
-                                            multiple
-                                            persistent-hint
-                                            small-chips
-                                            deletable-chips
-                                            @input="handleInvestmentTypeInput"
-                                        >
-                                            <template #no-data>
-                                                <v-list-item>
-                                                    <v-list-item-content>
-                                                        <v-list-item-title>
-                                                            No results matching "<strong>{{ search }}</strong
-                                                            >". Press <kbd>enter</kbd> to create a new one
-                                                        </v-list-item-title>
-                                                    </v-list-item-content>
-                                                </v-list-item>
-                                            </template>
-                                        </v-combobox>
-                                    </v-card-text>
-                                </v-card>
+                                <h4>{{  $t('language') }}</h4>
+                                <v-combobox
+                                    :items="availableLocales"
+                                    v-model="currentLocale"
+                                    item-text="name"
+                                    item-value="code"
+                                    @input="changeLocale"
+                                    outlined
+                                    dense
+                                >
+                                </v-combobox>
                             </v-card-text>
                         </v-card>
                     </v-tab-item>
+
                     <v-tab-item>
-                        <v-card flat>
+                        <v-card flat class="ma-2">
+                            <v-card-text>
+                                <h4>{{  $t('investmentTypes') }}</h4>
+                                <v-combobox
+                                    v-model="model"
+                                    :items="items"
+                                    :search-input.sync="search"
+                                    @input="handleInvestmentTypeInput"
+                                    hide-selected
+                                    multiple
+                                    persistent-hint
+                                    small-chips
+                                    deletable-chips
+                                    outlined
+                                    dense
+                                >
+                                    <template #no-data>
+                                        <v-list-item>
+                                            <v-list-item-content>
+                                                <v-list-item-title>
+                                                    No results matching "<strong>{{ search }}</strong
+                                                    >". Press <kbd>enter</kbd> to create a new one
+                                                </v-list-item-title>
+                                            </v-list-item-content>
+                                        </v-list-item>
+                                    </template>
+                                </v-combobox>
+                            </v-card-text>
+                        </v-card>
+                    </v-tab-item>
+
+                    <v-tab-item>
+                        <v-card flat class="ma-2">
                             <v-card-text>
                                 <v-btn outlined block color="primary" @click="loadEntryData"> Load Entries Data </v-btn>
                                 <v-btn outlined block color="primary" @click="loadIncomeData"> Load Income Data </v-btn>
@@ -88,7 +82,7 @@
             </v-card-text>
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="grey darken-1" text @click="dialog = false"> Close </v-btn>
+                <v-btn color="grey darken-1" text @click="dialog = false"> {{  $t('close') }} </v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -120,6 +114,9 @@ export default {
         availableLocales() {
             return this.$i18n.locales.filter((i) => i.code !== this.$i18n.locale)
         },
+        currentLocale() {
+            return this.$i18n.locales.find((i) => i.code === this.$i18n.locale)
+        },
     },
     watch: {},
     created() {},
@@ -135,10 +132,10 @@ export default {
                 this.$store.commit('addInvestmentType', name)
             })
         },
-        changeLocale(locale){
+        changeLocale(locale) {
             console.log(locale)
             this.$i18n.setLocale(locale.code)
-        }
+        },
     },
 }
 </script>

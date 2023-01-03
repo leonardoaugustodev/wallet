@@ -8,8 +8,6 @@ const convertSymbols = (symbols) => {
 }
 
 exports.getQuotes = functions.region('southamerica-east1').https.onCall(async (data, ctx) => {
-    // return { message: "Hello from Firebase!" };
-
     try {
         const symbols = data.symbols
         const response = await axios.get(
@@ -34,21 +32,15 @@ exports.getQuotes = functions.region('southamerica-east1').https.onCall(async (d
 });
 
 exports.getHistory = functions.region('southamerica-east1').https.onCall(async (data, ctx) => {
-    // return { message: "Hello from Firebase!" };
-
     try {
         const symbols = data.symbols
-        const convertedSymbols = convertSymbols(symbols)
-        console.log(convertedSymbols)
         const response = await axios.get(
             `https://query1.finance.yahoo.com/v8/finance/spark`,
             {
                 params: {
-                    "symbols": convertedSymbols,
-                    "range": "1y",
-                    "interval": "1d",
-                    "indicators": "close",
-                    corsDomain: 'br.financas.yahoo.com'
+                    symbols: symbols.join(','),
+                    range: "1y",
+                    interval: "1d",
                 },
                 headers: {
                     "content-type": "application/json;charset=utf-8"

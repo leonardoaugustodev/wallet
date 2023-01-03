@@ -153,9 +153,6 @@ export default {
         },
         initialize() {
             this.record = structuredClone(this.ticker.ticker)
-            // this.currentPrice = this.ticker.currentPrice
-            // this.logoUrl = this.ticker.logoUrl
-            // this.externalSync = this.ticker.externalSync || true
         },
     },
 }
