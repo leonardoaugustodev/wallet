@@ -70,9 +70,11 @@ export const getters = {
     },
     summarizeInvestedThisMonth(state) {
         const currentMonth = new Date().getMonth();
+        const currentYear = new Date().getFullYear();
         const entries = state.entries.filter(x => {
             const entryMonth = new Date(x.date).getMonth()
-            return entryMonth === currentMonth
+            const entryYear = new Date(x.date).getFullYear()
+            return entryMonth === currentMonth && entryYear === currentYear
         })
 
         return entries.reduce((acc, cv) => {
