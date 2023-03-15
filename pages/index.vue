@@ -11,7 +11,7 @@
                             </div>
                             <v-list-item-title class="text-h5 mb-1">
                                 <span
-                                    class="accent--text text-h6 font-weight-bold"
+                                    class="primary--text text-h6 font-weight-bold"
                                 >
                                     {{
                                         $utils.formatCurrency(investedThisMonth)
@@ -36,7 +36,7 @@
                             <div class="text-overline mb-4">TOTAL INVESTED</div>
                             <v-list-item-title class="text-h5 mb-1">
                                 <span
-                                    class="accent--text text-h6 font-weight-bold"
+                                    class="primary--text text-h6 font-weight-bold"
                                 >
                                     {{ $utils.formatCurrency(investedTotal) }}
                                 </span>
@@ -59,7 +59,7 @@
                             <div class="text-overline mb-4">TOTAL CURRENT</div>
                             <v-list-item-title class="text-h5 mb-1">
                                 <span
-                                    class="accent--text text-h6 font-weight-bold"
+                                    class="primary--text text-h6 font-weight-bold"
                                 >
                                     {{ $utils.formatCurrency(currentTotal) }}
                                 </span>

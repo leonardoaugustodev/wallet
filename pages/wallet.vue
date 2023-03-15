@@ -13,7 +13,7 @@
                     group-by="ticker.group"
                     :loading="loadingWallet"
                 >
-                    <template v-slot:group.header="{ items, isOpen, toggle }">
+                    <template #group.header="{ items, isOpen, toggle }">
                         <th colspan="4">
                             <v-icon @click="toggle">{{ isOpen ? 'mdi-minus' : 'mdi-plus' }} </v-icon>
                             {{ items[0].ticker.group }}
@@ -69,8 +69,6 @@
                         <span class="mr-1" :class="$utils.getTextColor(item.profit)">
                             {{ $utils.formatCurrency(item.profit) }}
                         </span>
-                        <v-icon v-if="item.profit > 0" small color="success"> mdi-trending-up </v-icon>
-                        <v-icon v-else small color="error"> mdi-trending-down </v-icon>
                     </template>
                     <template #item.profitPercentage="{ item }">
                         <div class="d-flex">
@@ -89,8 +87,6 @@
                         <span class="mr-1" :class="$utils.getTextColor(item.profitPlusIncome)">
                             {{ $utils.formatCurrency(item.profitPlusIncome) }}
                         </span>
-                        <v-icon v-if="item.profitPlusIncome > 0" small color="success"> mdi-trending-up </v-icon>
-                        <v-icon v-else small color="error"> mdi-trending-down </v-icon>
                     </template>
                     <template #item.profitPlusIncomePercentage="{ item }">
                         <v-chip

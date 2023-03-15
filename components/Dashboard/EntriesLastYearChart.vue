@@ -20,7 +20,7 @@ export default {
         aggregateByMonth() {
             const totals = this.summary.map((x) => x.total)
             const result = totals.map((x, i) => {
-                return totals.slice(0, i).reduce((acc, cv) => acc + cv, 0)
+                return totals.slice(0, i+1).reduce((acc, cv) => acc + cv, 0)
             })
 
             return result
