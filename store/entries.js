@@ -22,8 +22,11 @@ export const getters = {
             else return 1
         }).slice(0,10);
     },
-    summarizeByTicker: (state) => {
-        return state.entries.reduce((acc, entry) => {
+    summarizeByTicker: (state) => (filterOnDate = new Date()) => {
+
+        const entries = state.entries.filter((e) => new Date(e.date) <= new Date(filterOnDate)) || []
+
+        return entries.reduce((acc, entry) => {
             let reduced = acc[entry.ticker.code]
 
             if (!reduced) {
@@ -67,9 +70,11 @@ export const getters = {
     },
     summarizeInvestedThisMonth(state) {
         const currentMonth = new Date().getMonth();
+        const currentYear = new Date().getFullYear();
         const entries = state.entries.filter(x => {
             const entryMonth = new Date(x.date).getMonth()
-            return entryMonth === currentMonth
+            const entryYear = new Date(x.date).getFullYear()
+            return entryMonth === currentMonth && entryYear === currentYear
         })
 
         return entries.reduce((acc, cv) => {

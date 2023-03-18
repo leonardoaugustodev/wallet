@@ -4,7 +4,7 @@
 
         <span class="text-h3 ma-10">Wallet</span>
 
-        <v-btn color="primary" @click="login">Login with Google</v-btn>
+        <v-btn color="primary" @click="login">{{ $t('loginWithGoogle') }}</v-btn>
 
     </div>
 </template>

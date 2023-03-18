@@ -28,7 +28,7 @@ export const actions = {
             await dispatch('ticker/index', null, { root: true })
             await dispatch('incomes/index', null, { root: true })
             await dispatch('entries/index', null, { root: true })
-            await dispatch('wallet/index', null, { root: true })
+            await dispatch('wallet/index', {}, { root: true })
         }
     },
     async logout(store) {

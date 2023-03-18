@@ -29,7 +29,7 @@ export const mutations = {
 export const actions = {
     async index({ commit, rootGetters }) {
         const userUID = await rootGetters['users/getUserUID']
-        const ref = this.$fire.firestore.collection('tickers').where("_userUID", "==", userUID )
+        const ref = this.$fire.firestore.collection('tickers')
         try {
             const snapshot = await ref.get()
             const tickers = []
@@ -47,14 +47,13 @@ export const actions = {
 
             if (existingTicker) return
 
-            const ref = this.$fire.firestore.collection('tickers').doc()
+            const ref = this.$fire.firestore.collection('tickers').doc(ticker.code)
             ticker._id = ref.id
-            ticker._userUID = rootGetters['users/getUserUID']
             ticker._createdAt =
                 this.$fireModule.firestore.FieldValue.serverTimestamp()
             ticker._updatedAt =
                 this.$fireModule.firestore.FieldValue.serverTimestamp()
-            ticker.currentPrice = 1
+            ticker.currentPrice = ticker.currentPrice || 1
             ticker.externalSync = true
             await ref.set(ticker)
             commit('create', ticker)
@@ -92,26 +91,32 @@ export const actions = {
             }
         })
 
+        const BRL_USD = 'BRL=X';
+
         const bovespaTickers = tickers
             .filter((t) => t.source === 'bovespa' && t.externalSync)
-            ?.map((x) => x.code)
-        if(!bovespaTickers || !bovespaTickers.length) return;
+            ?.map((x) => `${x.code}.SA`)
+        if (!bovespaTickers || !bovespaTickers.length) return;
 
-        const tickersData = await this.$brapi?.getQuotes(
-            bovespaTickers?.join('%2C')
-        )
-        if (!tickersData || !tickersData.results.length) return
+        const cryptoTickers = tickers.filter((t) => t.source === 'crypto' && t.externalSync)?.map((x) => `${x.code}-USD`)
 
-        for (const tickerData of tickersData.results) {
+        const getQuotes = this.$fire.functions.httpsCallable('getQuotes')
+        const tickersData = await getQuotes({ symbols: [BRL_USD, ...bovespaTickers, ...cryptoTickers] })
+        if (!tickersData || !tickersData.data?.length) return
+
+        const BRLUSD = tickersData.data.find(t => t.symbol === 'BRL=X');
+
+        for (const tickerData of tickersData.data) {
             const stateTicker = tickers.find(
-                (t) => t.code === tickerData.symbol
+                (t) => t.code === tickerData.symbol.replace('.SA', '').replace('-USD', '')
             )
+
+            const currentPrice = (tickerData?.regularMarketPrice * (tickerData.quoteType === 'CRYPTOCURRENCY' ? BRLUSD?.regularMarketPrice : 1)) || 1
 
             commit('update', {
                 ...stateTicker,
-                currentPrice: tickerData.regularMarketPrice || 1,
+                currentPrice,
                 name: tickerData.longName,
-                logoUrl: tickerData.logourl,
             })
         }
     },

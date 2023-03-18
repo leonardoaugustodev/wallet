@@ -3,7 +3,34 @@
         <v-col cols="12">
             <!-- <v-progress-linear v-model="value" color="deep-purple"></v-progress-linear> -->
             <v-card class="pa-4">
-                <v-card-title>Wallet</v-card-title>
+                <v-card-title>
+                    {{ $t('wallet') }}
+                    <v-spacer></v-spacer>
+
+                    <!-- <div width="300">
+                        <v-menu
+                            v-model="menu2"
+                            :close-on-content-click="false"
+                            :nudge-right="40"
+                            transition="scale-transition"
+                            offset-y
+                        >
+                            <template #activator="{ on, attrs }">
+                                <v-text-field
+                                    v-model="replayDate"
+                                    type="date"
+                                    label="Replay date"
+                                    readonly
+                                    v-bind="attrs"
+                                    outlined
+                                    dense
+                                    v-on="on"
+                                ></v-text-field>
+                            </template>
+                            <v-date-picker v-model="replayDate" @input="menu2 = false"></v-date-picker>
+                        </v-menu>
+                    </div> -->
+                </v-card-title>
                 <v-data-table
                     :headers="headers"
                     :items="entries"
@@ -126,6 +153,7 @@ export default {
             menu: false,
             modal: false,
             menu2: false,
+            replayDate: new Date(Date.now()).toISOString().substr(0, 10),
             editedItem: {
                 tickerCode: '',
                 date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().substr(0, 10),
@@ -148,7 +176,7 @@ export default {
             },
             headers: [
                 {
-                    text: 'Ticker',
+                    text: this.$t('ticker'),
                     align: 'start',
                     value: 'ticker.code',
                 },
@@ -158,36 +186,36 @@ export default {
                 //     value: 'ticker.name',
                 // },
                 {
-                    text: 'Group',
+                    text: this.$t('group'),
                     align: 'start',
                     value: 'ticker.group',
                 },
-                { text: 'Avg. Price', value: 'paidValue', align: 'right' },
+                { text: this.$t('averagePrice'), value: 'paidValue', align: 'right' },
                 {
-                    text: 'Current Price',
+                    text: this.$t('currentPrice'),
                     value: 'currentPrice',
                     align: 'right',
                 },
-                { text: 'Quantity', value: 'quantity', align: 'right' },
-                { text: 'Invested Total', value: 'paidTotal', align: 'right' },
+                { text: this.$t('quantity'), value: 'quantity', align: 'right' },
+                { text: this.$t('totalInvested'), value: 'paidTotal', align: 'right' },
                 {
-                    text: 'Current Total',
+                    text: this.$t('totalCurrent'),
                     value: 'currentTotal',
                     align: 'right',
                 },
-                { text: 'Profit', value: 'profit', align: 'right' },
-                { text: 'Difference', value: 'profitPercentage' },
-                { text: 'Incomes', value: 'incomes', align: 'right' },
+                { text: this.$t('profit'), value: 'profit', align: 'right' },
+                { text: this.$t('difference'), value: 'profitPercentage' },
+                { text: this.$t('incomes'), value: 'incomes', align: 'right' },
                 {
-                    text: 'Profit + Inc.',
+                    text: this.$t('profitPlusIncome'),
                     value: 'profitPlusIncome',
                     align: 'right',
                 },
                 {
-                    text: 'Profit + Inc. %',
+                    text: this.$t('profitPlusIncomePercentage'),
                     value: 'profitPlusIncomePercentage',
                 },
-                { text: 'Position', value: 'position', align: 'right' },
+                { text: this.$t('position'), value: 'position', align: 'right' },
             ],
             value: 0,
             interval: 0,
@@ -227,20 +255,16 @@ export default {
         value(val) {
             if (val < 100) return
 
-            // this.$store.dispatch('wallet/index');
-
             this.value = 0
             this.startBuffer()
         },
+        replayDate(nv) {
+            console.log(nv)
+            this.$store.dispatch('wallet/index', { byPassLastRefresh: true, calculateOnDate: nv })
+        },
     },
 
-    created() {
-        // this.$store.subscribe((mutation) => {
-        //     if (mutation.type === 'ticker/update') {
-        //         // this.$store.dispatch('wallet/index')
-        //     }
-        // })
-    },
+    created() {},
 
     beforeDestroy() {
         clearInterval(this.interval)

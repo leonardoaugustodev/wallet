@@ -6,8 +6,8 @@
             <!-- <Avatar if:true="$vuetify.breakpoint.smAndDown" /> -->
 
             <v-tabs centered class="ml-n9" color="grey darken-1">
-                <v-tab v-for="(item, i) in items" :key="i" :to="item.to" router exact>
-                    {{ item.title }}
+                <v-tab v-for="(item, i) in items" :key="i" :to="localePath(item.to)" router exact>
+                    {{ getTranslation(item.title) }}
                 </v-tab>
             </v-tabs>
 
@@ -16,7 +16,7 @@
         </v-app-bar>
 
         <v-main>
-            <v-container>
+            <v-container fluid>
                 <Nuxt />
             </v-container>
         </v-main>
@@ -41,22 +41,22 @@ export default {
             items: [
                 {
                     icon: 'mdi-dashboard',
-                    title: 'Dashboard',
+                    title: 'dashboard',
                     to: '/',
                 },
                 {
                     icon: 'mdi-wallet',
-                    title: 'Wallet',
+                    title: 'wallet',
                     to: '/wallet',
                 },
                 {
                     icon: 'mdi-table-large-plus',
-                    title: 'Entries',
+                    title: 'entries',
                     to: '/entries',
                 },
                 {
                     icon: 'mdi-wallet-plus',
-                    title: 'Incomes',
+                    title: 'incomes',
                     to: '/incomes',
                 },
             ],
@@ -65,6 +65,9 @@ export default {
             rightDrawer: false,
             title: 'Wallet',
         }
+    },
+
+    async fetch() {
     },
     computed: {
         showSettings() {
@@ -78,14 +81,10 @@ export default {
         if(!this.userIsAuthenticated) this.$router.push('/login')
     },
 
-    async fetch() {
-        // await this.$store.dispatch('ticker/index')
-        // await this.$store.dispatch('incomes/index')
-        // await this.$store.dispatch('entries/index')
-        // await this.$store.dispatch('wallet/index')
-    },
-
     methods: {
+        getTranslation(key){
+            return this.$t(key)
+        }
     },
 }
 </script>

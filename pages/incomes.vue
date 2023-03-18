@@ -3,13 +3,13 @@
         <v-col cols="12">
             <v-card class="pa-4">
                 <v-card-title>
-                    Incomes
+                    {{ $t('incomes') }}
                     <v-spacer></v-spacer>
                     <!-- EDIT MODAL -->
                     <v-dialog v-model="dialog" max-width="500px" persistent>
                         <template #activator="{ on, attrs }">
                             <v-btn color="primary" v-bind="attrs" small depressed v-on="on">
-                                New Income
+                                {{ $t('newIncome') }}
                             </v-btn>
                         </template>
                         <v-card>
@@ -24,46 +24,78 @@
                                             <v-form ref="form" v-model="valid" lazy-validation>
                                                 <!-- DATE -->
                                                 <v-menu
-v-model="menu2" :close-on-content-click="false"
-                                                    :nudge-right="40" transition="scale-transition" offset-y
-                                                    :rules="[rules.required]" min-width="auto">
+                                                    v-model="menu2"
+                                                    :close-on-content-click="false"
+                                                    :nudge-right="40"
+                                                    transition="scale-transition"
+                                                    offset-y
+                                                    :rules="[rules.required]"
+                                                    min-width="auto"
+                                                >
                                                     <template #activator="{ on, attrs }">
                                                         <v-text-field
-v-model="
-                                                            editedItem.date
-                                                        " type="date" label="Date" readonly v-bind="attrs" outlined
-                                                            dense v-on="on"></v-text-field>
+                                                            v-model="editedItem.date"
+                                                            type="date"
+                                                            :label="$t('date')"
+                                                            readonly
+                                                            v-bind="attrs"
+                                                            outlined
+                                                            dense
+                                                            v-on="on"
+                                                        ></v-text-field>
                                                     </template>
                                                     <v-date-picker
-v-model="editedItem.date"
-                                                        @input="menu2 = false"></v-date-picker>
+                                                        v-model="editedItem.date"
+                                                        @input="menu2 = false"
+                                                    ></v-date-picker>
                                                 </v-menu>
 
                                                 <!-- TICKER -->
                                                 <v-combobox
-v-model="editedItem.ticker" :items="availableTickers"
-                                                    :rules="tickerRules" item-text="code" label="Ticker" outlined
-                                                    dense></v-combobox>
+                                                    v-model="editedItem.ticker"
+                                                    :items="availableTickers"
+                                                    :rules="tickerRules"
+                                                    item-text="code"
+                                                    :label="$t('ticker')"
+                                                    outlined
+                                                    dense
+                                                ></v-combobox>
 
                                                 <!-- TYPE -->
                                                 <v-combobox
-v-model="editedItem.type" :items="incomeTypes"
-                                                    :rules="[rules.required]" label="Type" outlined dense></v-combobox>
+                                                    v-model="editedItem.type"
+                                                    :items="incomeTypes"
+                                                    :rules="[rules.required]"
+                                                    :label="$t('type')"
+                                                    outlined
+                                                    dense
+                                                ></v-combobox>
 
                                                 <!-- MEMO -->
                                                 <v-text-field
-v-model="editedItem.memo" label="Memo" outlined
-                                                    dense></v-text-field>
+                                                    v-model="editedItem.memo"
+                                                    :label="$t('memo')"
+                                                    outlined
+                                                    dense
+                                                ></v-text-field>
 
                                                 <!-- AMOUNT -->
                                                 <v-text-field
-v-model="editedItem.amount" label="Amount" outlined
-                                                    type="number" dense></v-text-field>
+                                                    v-model="editedItem.amount"
+                                                    :label="$t('amount')"
+                                                    outlined
+                                                    type="number"
+                                                    dense
+                                                ></v-text-field>
 
                                                 <!-- QUANTITY -->
                                                 <v-text-field
-v-model="editedItem.quantity" label="Quantity" outlined
-                                                    type="number" dense></v-text-field>
+                                                    v-model="editedItem.quantity"
+                                                    :label="$t('quantity')"
+                                                    outlined
+                                                    type="number"
+                                                    dense
+                                                ></v-text-field>
                                             </v-form>
                                         </v-col>
                                     </v-row>
@@ -71,13 +103,9 @@ v-model="editedItem.quantity" label="Quantity" outlined
                             </v-card-text>
 
                             <v-card-actions>
-                                <v-btn color="error" text @click="close">
-                                    Cancel
-                                </v-btn>
+                                <v-btn color="error" text @click="close"> {{ $t('cancel') }} </v-btn>
                                 <v-spacer></v-spacer>
-                                <v-btn color="primary" text @click="save">
-                                    Save
-                                </v-btn>
+                                <v-btn color="primary" text @click="save"> {{ $t('save') }} </v-btn>
                             </v-card-actions>
                         </v-card>
                     </v-dialog>
@@ -85,22 +113,19 @@ v-model="editedItem.quantity" label="Quantity" outlined
                     <!-- DELETE MODAL -->
                     <v-dialog v-model="dialogDelete" max-width="500px">
                         <v-card>
-                            <v-card-title class="text-h5">Are you sure you want to delete this
-                                item?</v-card-title>
+                            <v-card-title class="text-h5"> {{ $t('deleteConfirmation') }}</v-card-title>
                             <v-card-actions>
                                 <v-spacer></v-spacer>
-                                <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
-                                <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
+                                <v-btn color="blue darken-1" text @click="closeDelete"> {{ $t('cancel') }}</v-btn>
+                                <v-btn color="blue darken-1" text @click="deleteItemConfirm">
+                                    {{ $t('confirm') }}</v-btn
+                                >
                                 <v-spacer></v-spacer>
                             </v-card-actions>
                         </v-card>
                     </v-dialog>
                 </v-card-title>
-                <v-data-table
-                    :headers="headers"
-                    :items="incomes"
-                    sort-by="date"
-                >
+                <v-data-table :headers="headers" :items="incomes" sort-by="date">
                     <template #item.ticker.code="{ item }">
                         <span class="font-weight-bold">
                             {{ item.ticker.code }}
@@ -124,15 +149,11 @@ v-model="editedItem.quantity" label="Quantity" outlined
                     </template>
 
                     <template #item.actions="{ item }">
-                        <v-icon small class="mr-2" @click="editItem(item)">
-                            mdi-pencil
-                        </v-icon>
-                        <v-icon small @click="deleteItem(item)">
-                            mdi-delete
-                        </v-icon>
+                        <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
+                        <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
                     </template>
 
-                    <template #no-data> No data to show. </template>
+                    <template #no-data> {{ $t('noDataToShow') }} </template>
                 </v-data-table>
             </v-card>
         </v-col>
@@ -152,7 +173,7 @@ export default {
             menu2: false,
             valid: true,
             rules: {
-                required: (value) => !!value || 'Required.',
+                required: (value) => !!value || this.$t('required'),
             },
             incomeTypes: ['Dividend', 'Interest'],
             editedItem: {
@@ -163,11 +184,7 @@ export default {
                     name: '',
                     unitPrice: 0,
                 },
-                date: new Date(
-                    Date.now() - new Date().getTimezoneOffset() * 60000
-                )
-                    .toISOString()
-                    .substring(0, 10),
+                date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().substring(0, 10),
                 type: '',
                 memo: '',
                 amount: 0,
@@ -181,32 +198,25 @@ export default {
                     name: '',
                     unitPrice: 0,
                 },
-                date: new Date(
-                    Date.now() - new Date().getTimezoneOffset() * 60000
-                )
-                    .toISOString()
-                    .substring(0, 10),
+                date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().substring(0, 10),
                 type: '',
                 memo: '',
                 amount: 0,
                 quantity: 0,
             },
             headers: [
-                { text: 'Date', value: 'date' },
-                { text: 'Ticker', value: 'ticker.code', align: 'start' },
-                { text: 'Type', value: 'type' },
-                { text: 'Memo', value: 'memo' },
-                { text: 'Amount', value: 'amount' },
-                { text: 'Quantity', value: 'quantity' },
-                // { text: 'Dividend/QTY', value: 'unitDividend' },
-                { text: 'Unit Price', value: 'unitPrice' },
-                { text: 'Yield', value: 'yield' },
-                { text: 'Actions', value: 'actions' },
+                { text: this.$t('date'), value: 'date' },
+                { text: this.$t('ticker'), value: 'ticker.code', align: 'start' },
+                { text: this.$t('type'), value: 'type' },
+                { text: this.$t('memo'), value: 'memo' },
+                { text: this.$t('amount'), value: 'amount' },
+                { text: this.$t('quantity'), value: 'quantity' },
+                { text: this.$t('unitPrice'), value: 'unitPrice' },
+                { text: this.$t('yield'), value: 'yield' },
+                { text: this.$t('actions'), value: 'actions' },
             ],
             availableTickers: [],
-            tickerRules: [
-                v => !!v.code || 'Required.'
-            ]
+            tickerRules: [(v) => !!v.code || this.$t('required')],
         }
     },
     computed: {
@@ -214,7 +224,7 @@ export default {
             return this.$store.state.incomes.incomes || []
         },
         formTitle() {
-            return this.editedIndex === -1 ? 'New Income' : 'Edit Income'
+            return this.editedIndex === -1 ? this.$t('newIncome') : this.$t('editIncome')
         },
     },
     watch: {
@@ -278,12 +288,11 @@ export default {
         },
 
         async save() {
-
             await this.$refs.form.validate()
 
             if (!this.valid) {
                 this.$notifier.showMessage({
-                    content: 'Please fill all required fields!',
+                    content: this.$t('fillAllFields'),
                     color: 'error',
                 })
                 return
@@ -292,12 +301,12 @@ export default {
             if (this.editedIndex > -1) {
                 this.$store.dispatch('incomes/update', this.editedItem)
                 this.$notifier.showMessage({
-                    content: 'The record was updated succesfully!',
+                    content: this.$t('recordUpdatedSucessfully'),
                     color: 'info',
                 })
             } else {
                 this.$notifier.showMessage({
-                    content: 'New record was saved succesfully!',
+                    content: this.$t('newRecordCreatedSucessfully'),
                     color: 'info',
                 })
                 this.$store.dispatch('incomes/create', this.editedItem)
@@ -307,8 +316,7 @@ export default {
         },
 
         updateEntryTotal() {
-            this.editedItem.total =
-                this.editedItem.quantity * this.editedItem.unitPrice
+            this.editedItem.total = this.editedItem.quantity * this.editedItem.unitPrice
         },
     },
 }

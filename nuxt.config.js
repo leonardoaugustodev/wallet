@@ -1,4 +1,5 @@
 import colors from 'vuetify/es5/util/colors'
+import i18n from './config/i18n'
 
 export default {
     // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
@@ -32,6 +33,7 @@ export default {
         '~/plugins/utils.js',
         '~/plugins/brapi.js',
         '~/plugins/calculator.js',
+        '~/plugins/yahoo.js',
         { src: '~/plugins/apexchart.js', ssr: false },
     ],
 
@@ -51,8 +53,19 @@ export default {
         // https://go.nuxtjs.dev/axios
         '@nuxtjs/axios',
         '@nuxtjs/firebase',
+        '@nuxtjs/i18n',
+        '@nuxtjs/dotenv'
     ],
-
+    
+    i18n: {
+        locales: [
+            { code: 'pt_BR', name: 'Portuguese' },
+            { code: 'en', name: 'English' },
+        ],
+        defaultLocale: 'en',
+        vueI18n: i18n,
+    },
+    
     // Axios module configuration: https://go.nuxtjs.dev/config-axios
     axios: {
         // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
@@ -61,13 +74,13 @@ export default {
 
     firebase: {
         config: {
-            apiKey: 'AIzaSyCprcq0b0tQSM4LExW86Rx35CC3Lu0Sl9g',
-            authDomain: 'walleet-a57a8.firebaseapp.com',
-            projectId: 'walleet-a57a8',
-            storageBucket: 'walleet-a57a8.appspot.com',
-            messagingSenderId: '641828251067',
-            appId: '1:641828251067:web:8c5d42856f92aa3eb7909e',
-            measurementId: 'G-D4Q3P38XCK',
+            apiKey: process.env.FIREBASE_API_KEY,
+            authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+            projectId: process.env.FIREBASE_PROJECT_ID,
+            storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+            messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+            appId: process.env.FIREBASE_APP_ID,
+            measurementId: process.env.FIREBASE_MEASUREMENT_ID,
         },
         services: {
             auth: {
@@ -77,17 +90,20 @@ export default {
                     subscribeManually: false,
                 },
                 ssr: false,
-                emulatorPort:
-                    process.env.NODE_ENV === 'development' ? 9099 : undefined,
+                emulatorPort: process.env.NODE_ENV === 'development' ? 9099 : undefined,
                 emulatorHost: 'http://localhost',
                 disableEmulatorWarnings: true,
             },
             firestore: {
-                emulatorPort:
-                    process.env.NODE_ENV === 'development' ? 8080 : undefined,
+                emulatorPort: process.env.NODE_ENV === 'development' ? 8080 : undefined,
                 emulatorHost: 'localhost',
             },
             hosting: true,
+            functions: {
+                location: 'southamerica-east1',
+                emulatorPort: process.env.NODE_ENV === 'development' ? 5001 : undefined,
+                emulatorHost: 'http://127.0.0.1',
+              }
         },
     },
 
@@ -106,7 +122,7 @@ export default {
                     warning: colors.amber.base,
                     error: colors.deepOrange.accent4,
                     success: colors.green.accent4,
-                    primaryText: colors.deepOrange.base
+                    primaryText: colors.deepOrange.base,
                 },
             },
         },
@@ -114,4 +130,6 @@ export default {
 
     // Build Configuration: https://go.nuxtjs.dev/config-build
     build: {},
+
+    
 }
