@@ -60,5 +60,6 @@
     "fillAllFields": "Please, fill all the required fields!",
     "recordUpdatedSucessfully": "The record was updated successfully!",
     "newRecordCreatedSucessfully": "The new record was created sucessfully!",
-    "deleteConfirmation": "Are you sure about deleting this item?"
+    "deleteConfirmation": "Are you sure about deleting this item?",
+    "inactiveWallet": "Inactives"
 }
