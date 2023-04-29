@@ -1,4 +1,4 @@
-{
+module.exports = {
     "actions": "Ações",
     "aggregated": "Agregado",
     "amount": "Valor",

@@ -1,4 +1,4 @@
-{
+module.exports = {
     "actions": "Actions",
     "aggregated": "Aggregated",
     "amount": "Amount",

@@ -23,7 +23,7 @@
                         </v-card>
                     </v-dialog>
                 </v-card-title>
-                <v-data-table :headers="headers" :items="incomes" sort-by="date">
+                <v-data-table :headers="headers" :items="incomes" sort-by="date" sort-desc>
                     <template #item.ticker.code="{ item }">
                         <span class="font-weight-bold">
                             {{ item.ticker.code }}
