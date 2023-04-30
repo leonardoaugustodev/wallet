@@ -1,4 +1,4 @@
-{
+module.exports = {
     "actions": "Ações",
     "aggregated": "Agregado",
     "amount": "Valor",
@@ -61,5 +61,6 @@
     "recordUpdatedSucessfully": "O registro foi atualizado com sucesso!",
     "newRecordCreatedSucessfully": "O novo registro foi criado com sucesso!",
     "deleteConfirmation": "Tem certeza que deseja deletar esse item?",
-    "inactiveWallet": "Desativados"
+    "inactiveWallet": "Desativados",
+    "saveAndNew": "Salvar e criar"
 }
