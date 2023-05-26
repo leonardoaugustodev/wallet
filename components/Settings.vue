@@ -1,37 +1,37 @@
 <template>
     <v-dialog v-model="dialog" persistent max-width="800">
         <template #activator="{ on, attrs }">
-            <v-btn block text v-bind="attrs" v-on="on"> {{$t('settings')}} </v-btn>
+            <v-btn block text v-bind="attrs" v-on="on"> {{ $t('settings') }} </v-btn>
         </template>
         <v-card>
-            <v-card-title class="text-h5"> {{ $t('settings')}} </v-card-title>
+            <v-card-title class="text-h5"> {{ $t('settings') }} </v-card-title>
             <v-card-text>
                 <v-tabs vertical>
                     <v-tab>
                         <v-icon left> mdi-account </v-icon>
-                        {{  $t('profile') }}
+                        {{ $t('profile') }}
                     </v-tab>
                     <v-tab>
                         <v-icon left> mdi-tools </v-icon>
-                        {{  $t('general') }}
+                        {{ $t('general') }}
                     </v-tab>
-                    <v-tab>
+                    <v-tab v-if="isDevEnvironment">
                         <v-icon left> mdi-test-tube </v-icon>
-                        {{  $t('developer') }}
+                        {{ $t('developer') }}
                     </v-tab>
 
                     <v-tab-item>
                         <v-card flat class="ma-2">
                             <v-card-text>
-                                <h4>{{  $t('language') }}</h4>
+                                <h4>{{ $t('language') }}</h4>
                                 <v-combobox
-                                    :items="availableLocales"
                                     v-model="currentLocale"
+                                    :items="availableLocales"
                                     item-text="name"
                                     item-value="code"
-                                    @input="changeLocale"
                                     outlined
                                     dense
+                                    @input="changeLocale"
                                 >
                                 </v-combobox>
                             </v-card-text>
@@ -41,12 +41,11 @@
                     <v-tab-item>
                         <v-card flat class="ma-2">
                             <v-card-text>
-                                <h4>{{  $t('investmentTypes') }}</h4>
+                                <h4>{{ $t('investmentTypes') }}</h4>
                                 <v-combobox
                                     v-model="model"
                                     :items="items"
                                     :search-input.sync="search"
-                                    @input="handleInvestmentTypeInput"
                                     hide-selected
                                     multiple
                                     persistent-hint
@@ -54,6 +53,7 @@
                                     deletable-chips
                                     outlined
                                     dense
+                                    @input="handleInvestmentTypeInput"
                                 >
                                     <template #no-data>
                                         <v-list-item>
@@ -82,7 +82,7 @@
             </v-card-text>
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="grey darken-1" text @click="dialog = false"> {{  $t('close') }} </v-btn>
+                <v-btn color="grey darken-1" text @click="dialog = false"> {{ $t('close') }} </v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -116,6 +116,9 @@ export default {
         },
         currentLocale() {
             return this.$i18n.locales.find((i) => i.code === this.$i18n.locale)
+        },
+        isDevEnvironment() {
+            return process.env.NODE_ENV === 'development'
         },
     },
     watch: {},
