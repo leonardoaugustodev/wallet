@@ -111,7 +111,7 @@ export default {
             incomeTypes: ['Dividend', 'Interest'],
             menu2: false,
             availableTickers: [],
-            tickerRules: [(v) => !!v.code || this.$t('required')],
+            tickerRules: [(v) => !!v?.code || this.$t('required')],
             record: {
                 _id: '',
                 ticker: {
@@ -121,7 +121,7 @@ export default {
                     unitPrice: 0,
                 },
                 date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().substring(0, 10),
-                type: '',
+                type: 'Dividend',
                 memo: '',
                 amount: 0,
                 quantity: 0,
@@ -213,7 +213,10 @@ export default {
                 })
             }
 
+            this.record = structuredClone(this.defaultItem)
+            this.$refs.form.reset()
             this.close()
+
         },
     },
 }
