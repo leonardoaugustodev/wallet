@@ -34,9 +34,8 @@ export const getters = {
 
         const initialSummary = [...Array(12).keys()].map((i) => {
             const currentMonthDate = subtractMonths(new Date(), i)
-            const date = `${currentMonthDate.getFullYear()}-${
-                currentMonthDate.getMonth() + 1
-            }`
+            const date = `${currentMonthDate.getFullYear()}-${currentMonthDate.getMonth() + 1
+                }`
             return {
                 date,
                 amount: 0,
@@ -44,9 +43,8 @@ export const getters = {
         })
 
         const result = state.incomes.reduce((acc, cv) => {
-            const currentDate = `${new Date(cv.date).getFullYear()}-${
-                new Date(cv.date).getMonth() + 1
-            }`
+            const currentDate = `${new Date(cv.date).getFullYear()}-${new Date(cv.date).getMonth() + 1
+                }`
             let existingReduce = acc.find((x) => x.date === currentDate)
 
             if (!existingReduce) {
@@ -63,6 +61,17 @@ export const getters = {
 
         return result.reverse()
     },
+    summarizeLast12Months: (state) => {
+        const startDate = new Date();
+        startDate.setFullYear(startDate.getFullYear() - 1);
+
+        const filteredIncomes = state.incomes.filter(x => new Date(x.date) > startDate)
+        const result = filteredIncomes.reduce((acc, cv) => {
+            return acc + parseFloat(cv.amount)
+        }, 0)
+
+        return result;
+    }
 }
 
 export const mutations = {
@@ -85,7 +94,7 @@ export const mutations = {
 export const actions = {
     async index({ commit, rootGetters }) {
         const userUID = await rootGetters['users/getUserUID']
-        const ref = this.$fire.firestore.collection('incomes').where("_userUID", "==", userUID )
+        const ref = this.$fire.firestore.collection('incomes').where("_userUID", "==", userUID)
         try {
             const snapshot = await ref.get()
             const incomes = []
@@ -98,7 +107,7 @@ export const actions = {
     async create({ commit, dispatch, rootGetters, rootState }, income) {
         try {
 
-            await dispatch('wallet/index', {}, {root: true});
+            await dispatch('wallet/index', {}, { root: true });
 
             const ref = this.$fire.firestore.collection('incomes').doc()
             income._id = ref.id

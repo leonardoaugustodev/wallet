@@ -62,5 +62,6 @@ module.exports = {
     "newRecordCreatedSucessfully": "O novo registro foi criado com sucesso!",
     "deleteConfirmation": "Tem certeza que deseja deletar esse item?",
     "inactiveWallet": "Desativados",
-    "saveAndNew": "Salvar e criar"
+    "saveAndNew": "Salvar e criar",
+    "incomesLast12Months": "Proventos últimos 12 meses"
 }
