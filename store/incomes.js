@@ -42,10 +42,16 @@ export const getters = {
             }
         })
 
-        const result = state.incomes.reduce((acc, cv) => {
+        const startDate = new Date();
+        startDate.setFullYear(startDate.getFullYear() - 1)
+        startDate.setDate(1);
+        const filteredIncomes = state.incomes.filter(x => new Date(x.date) >= startDate)
+
+        const result = filteredIncomes.reduce((acc, cv) => {
+
             const currentDate = `${new Date(cv.date).getFullYear()}-${new Date(cv.date).getMonth() + 1
                 }`
-            let existingReduce = acc.find((x) => x.date === currentDate)
+            let existingReduce = acc.find((x) => x.date === currentDate);
 
             if (!existingReduce) {
                 acc.push({
@@ -54,8 +60,8 @@ export const getters = {
                 })
                 existingReduce = acc.find((x) => x.date === currentDate)
             }
-
             existingReduce.amount += parseFloat(cv.amount)
+
             return acc
         }, initialSummary)
 
@@ -63,7 +69,8 @@ export const getters = {
     },
     summarizeLast12Months: (state) => {
         const startDate = new Date();
-        startDate.setFullYear(startDate.getFullYear() - 1);
+        startDate.setFullYear(startDate.getFullYear() - 1)
+        startDate.setDate(1);
 
         const filteredIncomes = state.incomes.filter(x => new Date(x.date) > startDate)
         const result = filteredIncomes.reduce((acc, cv) => {
