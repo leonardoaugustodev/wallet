@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <v-container fluid>
         <v-row>
             <!-- INVESTED THIS MONTH -->
             <v-col cols="12" lg="3" md="6">

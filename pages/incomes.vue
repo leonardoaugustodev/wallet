@@ -1,61 +1,83 @@
 <template>
-    <v-row justify="center" align="center">
-        <v-col cols="12">
-            <v-card class="pa-4">
-                <v-card-title>
-                    {{ $t('incomes') }}
-                    <v-spacer></v-spacer>
-                    <!-- EDIT MODAL -->
-                    <NewIncome :edited-item="editedItem" />
+    <v-container fluid>
+        <v-row>
+            <!-- PROFIT -->
+            <v-col cols="12" lg="3" md="6">
+                <v-card>
+                    <v-list-item two-line>
+                        <v-list-item-content>
+                            <div class="text-overline mb-4">{{ $t('incomesLast12Months') }}</div>
+                            <v-list-item-title class="text-h5 mb-1">
+                                <span class="accent--text text-h6 font-weight-bold">
+                                    {{ $utils.formatCurrency(incomesLast12Months) }}
+                                </span>
+                            </v-list-item-title>
+                        </v-list-item-content>
+                        <v-list-item-avatar tile>
+                            <v-icon x-large class="card-icon">mdi-finance </v-icon>
+                        </v-list-item-avatar>
+                    </v-list-item>
+                </v-card>
+            </v-col>
+        </v-row>
+        <v-row justify="center" align="center">
+            <v-col cols="12">
+                <v-card class="pa-4">
+                    <v-card-title>
+                        {{ $t('incomes') }}
+                        <v-spacer></v-spacer>
+                        <!-- EDIT MODAL -->
+                        <NewIncome :edited-item="editedItem" />
 
-                    <!-- DELETE MODAL -->
-                    <v-dialog v-model="dialogDelete" max-width="500px">
-                        <v-card>
-                            <v-card-title class="text-h5"> {{ $t('deleteConfirmation') }}</v-card-title>
-                            <v-card-actions>
-                                <v-spacer></v-spacer>
-                                <v-btn color="blue darken-1" text @click="closeDelete"> {{ $t('cancel') }}</v-btn>
-                                <v-btn color="blue darken-1" text @click="deleteItemConfirm">
-                                    {{ $t('confirm') }}</v-btn
-                                >
-                                <v-spacer></v-spacer>
-                            </v-card-actions>
-                        </v-card>
-                    </v-dialog>
-                </v-card-title>
-                <v-data-table :headers="headers" :items="incomes" sort-by="date" sort-desc>
-                    <template #item.ticker.code="{ item }">
-                        <span class="font-weight-bold">
-                            {{ item.ticker.code }}
-                        </span>
-                    </template>
+                        <!-- DELETE MODAL -->
+                        <v-dialog v-model="dialogDelete" max-width="500px">
+                            <v-card>
+                                <v-card-title class="text-h5"> {{ $t('deleteConfirmation') }}</v-card-title>
+                                <v-card-actions>
+                                    <v-spacer></v-spacer>
+                                    <v-btn color="blue darken-1" text @click="closeDelete"> {{ $t('cancel') }}</v-btn>
+                                    <v-btn color="blue darken-1" text @click="deleteItemConfirm">
+                                        {{ $t('confirm') }}</v-btn
+                                    >
+                                    <v-spacer></v-spacer>
+                                </v-card-actions>
+                            </v-card>
+                        </v-dialog>
+                    </v-card-title>
+                    <v-data-table :headers="headers" :items="incomes" sort-by="date" sort-desc>
+                        <template #item.ticker.code="{ item }">
+                            <span class="font-weight-bold">
+                                {{ item.ticker.code }}
+                            </span>
+                        </template>
 
-                    <template #item.amount="{ item }">
-                        {{ parseFloat(item.amount)?.toFixed(2) }}
-                    </template>
+                        <template #item.amount="{ item }">
+                            {{ parseFloat(item.amount)?.toFixed(2) }}
+                        </template>
 
-                    <template #item.quantity="{ item }">
-                        {{ parseFloat(item.quantity)?.toFixed(2) }}
-                    </template>
+                        <template #item.quantity="{ item }">
+                            {{ parseFloat(item.quantity)?.toFixed(2) }}
+                        </template>
 
-                    <template #item.unitPrice="{ item }">
-                        {{ $utils.formatCurrency(item.unitPrice) }}
-                    </template>
+                        <template #item.unitPrice="{ item }">
+                            {{ $utils.formatCurrency(item.unitPrice) }}
+                        </template>
 
-                    <template #item.yield="{ item }">
-                        {{ $utils.formatPercentage(item.yield) }}
-                    </template>
+                        <template #item.yield="{ item }">
+                            {{ $utils.formatPercentage(item.yield) }}
+                        </template>
 
-                    <template #item.actions="{ item }">
-                        <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
-                        <v-icon small @click="deleteItem(item._id)"> mdi-delete </v-icon>
-                    </template>
+                        <template #item.actions="{ item }">
+                            <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
+                            <v-icon small @click="deleteItem(item._id)"> mdi-delete </v-icon>
+                        </template>
 
-                    <template #no-data> {{ $t('noDataToShow') }} </template>
-                </v-data-table>
-            </v-card>
-        </v-col>
-    </v-row>
+                        <template #no-data> {{ $t('noDataToShow') }} </template>
+                    </v-data-table>
+                </v-card>
+            </v-col>
+        </v-row>
+    </v-container>
 </template>
 
 <script>
@@ -100,6 +122,9 @@ export default {
     computed: {
         incomes() {
             return this.$store.state.incomes.incomes || []
+        },
+        incomesLast12Months() {
+            return this.$store.getters['incomes/summarizeLast12Months']
         },
     },
     watch: {
