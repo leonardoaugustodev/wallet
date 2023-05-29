@@ -1,6 +1,6 @@
 <template>
-    <v-container fluid>
-        <v-row>
+    <div>
+        <v-row dense>
             <!-- PROFIT -->
             <v-col cols="12" lg="3" md="6">
                 <v-card>
@@ -19,8 +19,6 @@
                     </v-list-item>
                 </v-card>
             </v-col>
-        </v-row>
-        <v-row justify="center" align="center">
             <v-col cols="12">
                 <v-card class="pa-4">
                     <v-card-title>
@@ -77,7 +75,7 @@
                 </v-card>
             </v-col>
         </v-row>
-    </v-container>
+    </div>
 </template>
 
 <script>

@@ -103,7 +103,12 @@ export const getters = {
             }
         })
 
-        const result = state.entries.reduce((acc, cv) => {
+        const startDate = new Date();
+        startDate.setFullYear(startDate.getFullYear() - 1)
+        startDate.setDate(1);
+        const filteredEntries = state.entries.filter(x => new Date(x.date) >= startDate)
+
+        const result = filteredEntries.reduce((acc, cv) => {
             const currentDate = `${new Date(cv.date).getFullYear()}-${
                 new Date(cv.date).getMonth() + 1
             }`

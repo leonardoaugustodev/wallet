@@ -1,5 +1,5 @@
 <template>
-    <v-row justify="center" align="center">
+    <v-row dense justify="center" align="center">
         <v-col cols="12">
             <!-- <v-progress-linear v-model="value" color="deep-purple"></v-progress-linear> -->
             <v-card class="pa-4">
