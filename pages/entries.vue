@@ -1,5 +1,5 @@
 <template>
-    <v-row justify="center" align="center">
+    <v-row dense justify="center" align="center">
         <v-col cols="12">
             <v-card class="pa-4">
                 <v-card-title>
@@ -8,18 +8,13 @@
                     <NewEntry :edited-item="editedItem"></NewEntry>
                 </v-card-title>
 
-                <v-data-table
-                    :headers="headers"
-                    :items="entries"
-                    sort-by="tickerCode"
-                >
-
+                <v-data-table :headers="headers" :items="entries" sort-by="tickerCode">
                     <template #item.ticker.code="{ item }">
                         <span class="font-weight-bold">
                             {{ item.ticker.code }}
                         </span>
                     </template>
-                    
+
                     <template #item.unitPrice="{ item }">
                         {{ $utils.formatCurrency(item.unitPrice) }}
                     </template>
@@ -35,12 +30,10 @@
                     </template>
 
                     <template #item.actions="{ item }">
-                        <v-icon small class="mr-2" @click="editItem(item)">
-                            mdi-pencil
-                        </v-icon>
+                        <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
                     </template>
 
-                    <template #no-data> {{$t('noDataToShow')}} </template>
+                    <template #no-data> {{ $t('noDataToShow') }} </template>
                 </v-data-table>
             </v-card>
         </v-col>
@@ -66,10 +59,7 @@ export default {
                     group: '',
                     name: '',
                 },
-                date: new Date(
-                    new Date().getTime() +
-                        new Date().getTimezoneOffset() * 60000
-                ).toLocaleDateString(),
+                date: new Date(new Date().getTime() + new Date().getTimezoneOffset() * 60000).toLocaleDateString(),
                 description: '',
                 unitPrice: 0,
                 quantity: 0,
@@ -83,10 +73,7 @@ export default {
                     group: '',
                     name: '',
                 },
-                date: new Date(
-                    new Date().getTime() +
-                        new Date().getTimezoneOffset() * 60000
-                ).toLocaleDateString(),
+                date: new Date(new Date().getTime() + new Date().getTimezoneOffset() * 60000).toLocaleDateString(),
                 description: '',
                 unitPrice: 0,
                 quantity: 0,
@@ -151,9 +138,8 @@ export default {
 }
 </script>
 
-
 <style lang="scss">
 thead {
-    background: $table-header
+    background: $table-header;
 }
 </style>
