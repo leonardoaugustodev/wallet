@@ -63,5 +63,8 @@ module.exports = {
     "deleteConfirmation": "Tem certeza que deseja deletar esse item?",
     "inactiveWallet": "Desativados",
     "saveAndNew": "Salvar e criar",
-    "incomesLast12Months": "Proventos últimos 12 meses"
+    "incomesLast12Months": "Proventos últimos 12 meses",
+    "value": "Valor",
+    "startDate": "Data início",
+    "endDate": "Data fim"
 }
