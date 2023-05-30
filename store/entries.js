@@ -17,14 +17,16 @@ export const getters = {
             .map((e) => e.ticker.code)
     },
     getLast10Entries: (state) => {
-        return [...state.entries].sort((a,b) => {
-            if(new Date(a.date) > new Date(b.date)) return -1
+        return [...state.entries].sort((a, b) => {
+            if (new Date(a.date) > new Date(b.date)) return -1
             else return 1
-        }).slice(0,10);
+        }).slice(0, 10);
     },
-    summarizeByTicker: (state) => (filterOnDate = new Date()) => {
+    summarizeByTicker: (state) => (maxDate = new Date(), minDate) => {
 
-        const entries = state.entries.filter((e) => new Date(e.date) <= new Date(filterOnDate)) || []
+        const entries = state.entries.filter(x => {
+            return (new Date(x.date) <= new Date(maxDate)) && (minDate ? (new Date(x.date) >= new Date(minDate)) : true)
+        }) || []
 
         return entries.reduce((acc, entry) => {
             let reduced = acc[entry.ticker.code]
@@ -94,9 +96,8 @@ export const getters = {
 
         const initialSummary = [...Array(12).keys()].map((i) => {
             const currentMonthDate = subtractMonths(new Date(), i)
-            const date = `${currentMonthDate.getFullYear()}-${
-                currentMonthDate.getMonth() + 1
-            }`
+            const date = `${currentMonthDate.getFullYear()}-${currentMonthDate.getMonth() + 1
+                }`
             return {
                 date,
                 total: 0,
@@ -109,9 +110,8 @@ export const getters = {
         const filteredEntries = state.entries.filter(x => new Date(x.date) >= startDate)
 
         const result = filteredEntries.reduce((acc, cv) => {
-            const currentDate = `${new Date(cv.date).getFullYear()}-${
-                new Date(cv.date).getMonth() + 1
-            }`
+            const currentDate = `${new Date(cv.date).getFullYear()}-${new Date(cv.date).getMonth() + 1
+                }`
             let existingReduce = acc.find((x) => x.date === currentDate)
 
             if (!existingReduce) {
@@ -168,7 +168,7 @@ export const getters = {
     // },
     summarizeInvestedDueDate: (state) => (dueDate) => {
         const entries = state.entries.filter(x => new Date(x.date) <= dueDate)
-        return entries.reduce((acc,cv) => acc + cv.total)
+        return entries.reduce((acc, cv) => acc + cv.total)
     }
 }
 
@@ -192,7 +192,7 @@ export const mutations = {
 export const actions = {
     async index({ commit, rootGetters }) {
         const userUID = await rootGetters['users/getUserUID']
-        const ref = this.$fire.firestore.collection('entries').where("_userUID", "==", userUID )
+        const ref = this.$fire.firestore.collection('entries').where("_userUID", "==", userUID)
         try {
             const snapshot = await ref.get()
             const entries = []

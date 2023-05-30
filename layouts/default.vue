@@ -59,6 +59,11 @@ export default {
                     title: 'incomes',
                     to: '/incomes',
                 },
+                {
+                    icon: 'mdi-chart-bar',
+                    title: 'reports',
+                    to: '/reports',
+                },
             ],
             miniVariant: false,
             right: true,
