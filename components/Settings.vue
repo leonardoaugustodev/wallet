@@ -1,5 +1,7 @@
 <template>
     <v-dialog v-model="dialog" persistent max-width="800">
+        <NewInvestmentType :edited-item="editedInvestmentType"></NewInvestmentType>
+
         <template #activator="{ on, attrs }">
             <v-btn block text v-bind="attrs" v-on="on"> {{ $t('settings') }} </v-btn>
         </template>
@@ -21,7 +23,7 @@
                     </v-tab>
 
                     <v-tab-item>
-                        <v-card flat class="ma-2">
+                        <v-card flat>
                             <v-card-text>
                                 <h4>{{ $t('language') }}</h4>
                                 <v-combobox
@@ -39,39 +41,53 @@
                     </v-tab-item>
 
                     <v-tab-item>
-                        <v-card flat class="ma-2">
-                            <v-card-text>
-                                <h4>{{ $t('investmentTypes') }}</h4>
-                                <v-combobox
-                                    v-model="model"
-                                    :items="items"
-                                    :search-input.sync="search"
-                                    hide-selected
-                                    multiple
-                                    persistent-hint
-                                    small-chips
-                                    deletable-chips
-                                    outlined
-                                    dense
-                                    @input="handleInvestmentTypeInput"
-                                >
-                                    <template #no-data>
-                                        <v-list-item>
-                                            <v-list-item-content>
-                                                <v-list-item-title>
-                                                    No results matching "<strong>{{ search }}</strong
-                                                    >". Press <kbd>enter</kbd> to create a new one
-                                                </v-list-item-title>
-                                            </v-list-item-content>
-                                        </v-list-item>
-                                    </template>
-                                </v-combobox>
-                            </v-card-text>
+                        <v-card flat>
+                            <!-- <v-card-text> -->
+                            <v-tabs fixed-tabs dark>
+                                <v-tab> Entries </v-tab>
+                                <v-tab> Incomes </v-tab>
+
+                                <v-tab-item>
+                                    <v-data-table
+                                        :headers="investmentTypeHeaders"
+                                        :items="investmentTypes"
+                                        :items-per-page="-1"
+                                        class="elevation-1"
+                                        dense
+                                    >
+                                        <template #top>
+                                            <v-toolbar flat dense>
+                                                <v-toolbar-title>Investment Types</v-toolbar-title>
+                                                <v-spacer></v-spacer>
+                                                <v-btn color="primary" small @click="handleAddInvestmentType()">
+                                                    Add
+                                                </v-btn>
+                                            </v-toolbar>
+                                        </template>
+                                        <template #[`item.color`]="{ item }">
+                                            <v-icon v-if="item.color" small :color="item.color.hex">
+                                                mdi-circle-slice-8
+                                            </v-icon>
+                                        </template>
+                                        <template #[`item.isActive`]="{ item }">
+                                            <v-icon v-if="item.isActive" small color="green"> mdi-check-bold </v-icon>
+                                        </template>
+                                        <template #[`item.actions`]="{ item }">
+                                            <v-icon small class="mr-2" @click="editInvestmentType(item)">
+                                                mdi-pencil
+                                            </v-icon>
+                                        </template>
+                                    </v-data-table>
+                                </v-tab-item>
+
+                                <v-tab-item> Incomes </v-tab-item>
+                            </v-tabs>
+                            <!-- </v-card-text> -->
                         </v-card>
                     </v-tab-item>
 
                     <v-tab-item>
-                        <v-card flat class="ma-2">
+                        <v-card flat>
                             <v-card-text>
                                 <v-btn outlined block color="primary" @click="loadEntryData"> Load Entries Data </v-btn>
                                 <v-btn outlined block color="primary" @click="loadIncomeData"> Load Income Data </v-btn>
@@ -80,36 +96,37 @@
                     </v-tab-item>
                 </v-tabs>
             </v-card-text>
-            <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="grey darken-1" text @click="dialog = false"> {{ $t('close') }} </v-btn>
-            </v-card-actions>
         </v-card>
     </v-dialog>
-    <!--
-    <v-card class="mt-4">
-            <v-col cols="12">
-                <v-btn @click="loadTestData"> Load Test Data </v-btn>
-            </v-col>
-    </v-card> -->
 </template>
 
 <script>
 import { data } from '~/static/testData.js'
 import { incomeData } from '~/static/incomeData.js'
-
+import NewInvestmentType from '~/components/NewInvestmentType.vue'
 export default {
     name: 'Settings',
+    components: { NewInvestmentType },
     data() {
         return {
             dialog: false,
+            investmentTypeDialog: false,
+            editedInvestmentType: {},
             model: [],
             search: null,
+            investmentTypeHeaders: [
+                { text: 'Name', value: 'name' },
+                { text: 'Color', value: 'color', align: 'center' },
+                { text: 'Is Active', value: 'isActive', align: 'center' },
+                { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
+            ],
         }
     },
     computed: {
-        items() {
-            return this.$store.getters.getInvestmentTypeNames
+        investmentTypes() {
+            const types = this.$store.state.investmentTypes
+            console.log(types)
+            return types
         },
         availableLocales() {
             return this.$i18n.locales.filter((i) => i.code !== this.$i18n.locale)
@@ -136,8 +153,16 @@ export default {
             })
         },
         changeLocale(locale) {
-            console.log(locale)
             this.$i18n.setLocale(locale.code)
+        },
+        handleAddInvestmentType() {
+            this.editedInvestmentType = {
+                name: '',
+                color: '',
+            }
+        },
+        editInvestmentType(item) {
+            this.editedInvestmentType = structuredClone(item)
         },
     },
 }
