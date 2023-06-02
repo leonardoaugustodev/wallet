@@ -24,7 +24,6 @@
                                 <v-combobox
                                     v-model="record.priceSource"
                                     :items="priceSourceOptions"
-                                    :rules="[rules.required]"
                                     :label="$t('priceSource')"
                                     item-text="label"
                                     item-value="value"
@@ -40,6 +39,10 @@
                                     v-model="record.color"
                                     dot-size="25"
                                     swatches-max-height="200"
+                                    mode="hexa"
+                                    hide-mode-switch
+                                    :show-swatches="false"
+                                    width="428"
                                 ></v-color-picker>
                             </v-form>
                         </v-col>
@@ -71,14 +74,14 @@ export default {
                 _id: '',
                 name: '',
                 color: '',
-                priceSource: '',
+                priceSource: null,
                 isActive: true,
             },
             defaultItem: {
                 _id: '',
                 name: '',
                 color: '',
-                priceSource: '',
+                priceSource: null,
                 isActive: true,
             },
             dialog: false,
@@ -131,7 +134,7 @@ export default {
                     color: 'info',
                 })
             }
-
+            await this.$store.dispatch('getAllInvestmentTypes')
             this.close()
         },
         async create(record) {
@@ -158,7 +161,7 @@ export default {
         },
         deleteItem() {
             if (!this.editedItem._id) return
-            this.$store.dispatch('entries/delete', this.editedItem._id)
+            this.$store.dispatch('deleteInvestmentType', this.editedItem._id)
             this.close()
         },
         close() {

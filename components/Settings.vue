@@ -1,5 +1,5 @@
 <template>
-    <v-dialog v-model="dialog" persistent max-width="800">
+    <v-dialog v-model="dialog" max-width="800">
         <NewInvestmentType :edited-item="editedInvestmentType"></NewInvestmentType>
 
         <template #activator="{ on, attrs }">
@@ -65,7 +65,7 @@
                                             </v-toolbar>
                                         </template>
                                         <template #[`item.color`]="{ item }">
-                                            <v-icon v-if="item.color" small :color="item.color.hex">
+                                            <v-icon v-if="item.color" small :color="item.color">
                                                 mdi-circle-slice-8
                                             </v-icon>
                                         </template>
@@ -159,6 +159,8 @@ export default {
             this.editedInvestmentType = {
                 name: '',
                 color: '',
+                priceSource: null,
+                isActive: true,
             }
         },
         editInvestmentType(item) {
