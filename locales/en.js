@@ -69,5 +69,11 @@ module.exports = {
     "endDate": "End Date",
     "priceSource": "Price Source",
     "isActive": "Is Active",
-    "newInvestmentType": "New Investment Type"
+    "newInvestmentType": "New Investment Type",
+    "newIncomeType": "New Income Type",
+    "color": "Color",
+    "add": "Add",
+    "incomeTypes": "Income Types",
+    "editIncomeType": "Edit Income Type",
+    "editInvestmentType": "Edit Investment Type"
 }

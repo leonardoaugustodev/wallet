@@ -108,7 +108,6 @@ export default {
             rules: {
                 required: (value) => !!value || this.$t('required'),
             },
-            incomeTypes: ['Dividend', 'Interest'],
             menu2: false,
             availableTickers: [],
             tickerRules: [(v) => !!v?.code || this.$t('required')],
@@ -146,6 +145,9 @@ export default {
         formTitle() {
             return this.record._id ? this.$t('editIncome') : this.$t('newIncome')
         },
+        incomeTypes(){
+            return this.$store.state.incomeTypes.filter(x => x.isActive);
+        }
     },
     watch: {
         dialog(val) {

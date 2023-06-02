@@ -1,12 +1,22 @@
 <template>
-    <v-dialog v-model="dialog" max-width="800">
+    <v-dialog v-model="dialog" fullscreen transition="dialog-bottom-transition">
         <NewInvestmentType :edited-item="editedInvestmentType"></NewInvestmentType>
+        <NewIncomeType :edited-item="editedIncomeType"></NewIncomeType>
 
         <template #activator="{ on, attrs }">
             <v-btn block text v-bind="attrs" v-on="on"> {{ $t('settings') }} </v-btn>
         </template>
         <v-card>
-            <v-card-title class="text-h5"> {{ $t('settings') }} </v-card-title>
+            <v-toolbar dark color="primary">
+                <v-btn icon dark @click="dialog = false">
+                    <v-icon>mdi-close</v-icon>
+                </v-btn>
+                <v-toolbar-title>{{ $t('settings') }}</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-toolbar-items> </v-toolbar-items>
+            </v-toolbar>
+
+            <v-card-title class="text-h5"> </v-card-title>
             <v-card-text>
                 <v-tabs vertical>
                     <v-tab>
@@ -44,12 +54,12 @@
                         <v-card flat>
                             <!-- <v-card-text> -->
                             <v-tabs fixed-tabs dark>
-                                <v-tab> Entries </v-tab>
-                                <v-tab> Incomes </v-tab>
+                                <v-tab> {{ $t('entries') }} </v-tab>
+                                <v-tab> {{ $t('incomes') }} </v-tab>
 
-                                <v-tab-item>
+                                <v-tab-item class="mt-4">
                                     <v-data-table
-                                        :headers="investmentTypeHeaders"
+                                        :headers="typeTableHeaders"
                                         :items="investmentTypes"
                                         :items-per-page="-1"
                                         class="elevation-1"
@@ -57,10 +67,10 @@
                                     >
                                         <template #top>
                                             <v-toolbar flat dense>
-                                                <v-toolbar-title>Investment Types</v-toolbar-title>
+                                                <v-toolbar-title>{{ $t('investmentTypes') }}</v-toolbar-title>
                                                 <v-spacer></v-spacer>
                                                 <v-btn color="primary" small @click="handleAddInvestmentType()">
-                                                    Add
+                                                    {{ $t('add') }}
                                                 </v-btn>
                                             </v-toolbar>
                                         </template>
@@ -80,7 +90,38 @@
                                     </v-data-table>
                                 </v-tab-item>
 
-                                <v-tab-item> Incomes </v-tab-item>
+                                <v-tab-item class="mt-4">
+                                    <v-data-table
+                                        :headers="typeTableHeaders"
+                                        :items="incomeTypes"
+                                        :items-per-page="-1"
+                                        class="elevation-1"
+                                        dense
+                                    >
+                                        <template #top>
+                                            <v-toolbar flat dense>
+                                                <v-toolbar-title>{{ $t('incomeTypes') }}</v-toolbar-title>
+                                                <v-spacer></v-spacer>
+                                                <v-btn color="primary" small @click="handleAddIncomeType()">
+                                                    {{ $t('add') }}
+                                                </v-btn>
+                                            </v-toolbar>
+                                        </template>
+                                        <template #[`item.color`]="{ item }">
+                                            <v-icon v-if="item.color" small :color="item.color">
+                                                mdi-circle-slice-8
+                                            </v-icon>
+                                        </template>
+                                        <template #[`item.isActive`]="{ item }">
+                                            <v-icon v-if="item.isActive" small color="green"> mdi-check-bold </v-icon>
+                                        </template>
+                                        <template #[`item.actions`]="{ item }">
+                                            <v-icon small class="mr-2" @click="editIncomeType(item)">
+                                                mdi-pencil
+                                            </v-icon>
+                                        </template>
+                                    </v-data-table>
+                                </v-tab-item>
                             </v-tabs>
                             <!-- </v-card-text> -->
                         </v-card>
@@ -104,28 +145,26 @@
 import { data } from '~/static/testData.js'
 import { incomeData } from '~/static/incomeData.js'
 import NewInvestmentType from '~/components/NewInvestmentType.vue'
+import NewIncomeType from '~/components/NewIncomeType.vue'
 export default {
     name: 'Settings',
-    components: { NewInvestmentType },
+    components: { NewInvestmentType, NewIncomeType },
     data() {
         return {
             dialog: false,
-            investmentTypeDialog: false,
             editedInvestmentType: {},
+            editedIncomeType: {},
             model: [],
             search: null,
-            investmentTypeHeaders: [
-                { text: 'Name', value: 'name' },
-                { text: 'Color', value: 'color', align: 'center' },
-                { text: 'Is Active', value: 'isActive', align: 'center' },
-                { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
-            ],
         }
     },
     computed: {
         investmentTypes() {
             const types = this.$store.state.investmentTypes
-            console.log(types)
+            return types
+        },
+        incomeTypes() {
+            const types = this.$store.state.incomeTypes
             return types
         },
         availableLocales() {
@@ -136,6 +175,14 @@ export default {
         },
         isDevEnvironment() {
             return process.env.NODE_ENV === 'development'
+        },
+        typeTableHeaders() {
+            return [
+                { text: this.$t('name'), value: 'name' },
+                { text: this.$t('color'), value: 'color', align: 'center' },
+                { text: this.$t('isActive'), value: 'isActive', align: 'center' },
+                { text: this.$t('actions'), value: 'actions', sortable: false, align: 'right' },
+            ]
         },
     },
     watch: {},
@@ -165,6 +212,17 @@ export default {
         },
         editInvestmentType(item) {
             this.editedInvestmentType = structuredClone(item)
+        },
+        handleAddIncomeType() {
+            this.editedIncomeType = {
+                name: '',
+                color: '',
+                priceSource: null,
+                isActive: true,
+            }
+        },
+        editIncomeType(item) {
+            this.editedIncomeType = structuredClone(item)
         },
     },
 }

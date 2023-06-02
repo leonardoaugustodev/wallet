@@ -30,6 +30,7 @@ export const actions = {
             await dispatch('entries/index', null, { root: true })
             await dispatch('wallet/index', {}, { root: true })
             await dispatch('getAllInvestmentTypes', {}, { root: true })
+            await dispatch('getAllIncomeTypes', {}, { root: true })
         }
     },
     async logout(store) {
