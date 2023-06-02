@@ -66,5 +66,8 @@ module.exports = {
     "incomesLast12Months": "Proventos últimos 12 meses",
     "value": "Valor",
     "startDate": "Data início",
-    "endDate": "Data fim"
+    "endDate": "Data fim",
+    "priceSource": "Fonte de preço",
+    "isActive": "Ativo",
+    "newInvestmentType": "Novo tipo de investimento"
 }
