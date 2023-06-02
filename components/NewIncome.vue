@@ -146,7 +146,7 @@ export default {
             return this.record._id ? this.$t('editIncome') : this.$t('newIncome')
         },
         incomeTypes(){
-            return this.$store.state.incomeTypes.filter(x => x.isActive);
+            return this.$store.state.incomeTypes.filter(x => x.isActive).map(x => x.name);
         }
     },
     watch: {
