@@ -39,7 +39,7 @@ export const actions = {
             return Promise.reject(e)
         }
     },
-    async create({ state, commit, rootGetters }, ticker) {
+    async create({ state, commit }, ticker) {
         try {
             const existingTicker = state.tickers.find(
                 (e) => e.code === ticker.code
@@ -87,7 +87,7 @@ export const actions = {
         const tickers = state.tickers.map((t) => {
             return {
                 ...t,
-                source: types.find((x) => x.name === t.group)?.priceSource,
+                source: types.find((x) => x.name === t.group)?.priceSource || types.find((x) => x.name === t.group)?.priceSource.value,
             }
         })
 
