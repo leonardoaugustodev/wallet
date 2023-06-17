@@ -225,7 +225,7 @@ export default {
 
                 const grp = this.$store.getters.getInvestmentTypeByName(this.record.ticker.group)
 
-                if (grp.priceSource === 'bovespa') {
+                if (grp.priceSource.value === 'bovespa') {
                     const tickerData = await this.$brapi.getQuotes(tickerCode)
                     console.log(tickerData)
                     if (tickerData.results && tickerData.results.length) {
